@@ -1,21 +1,20 @@
 class tab extends tabBoundary {
 
   PGraphics canvas,canvas2;
-  float x, y, w, h,bx,by,bh,bw;
+  float x, y, w, h,bx,by,bh,bw,r1,r2,r3,r4;
   int tabindex = -1, state, current,id,Width,Height;
   String label,itemLabel;
   boolean border,open,parentCanvas,overflow,docking,docked,dmdown;
+  public boolean localTheme;
   PVector mouse,mouse2;
   Dock parentDock; 
   
   ArrayList<Grid> grids = new ArrayList<Grid>();
-  ArrayList<Grid3D> grids3d = new ArrayList<Grid3D>();
   
   ArrayList<Window> windows = new ArrayList<Window>();
   ArrayList<Button> buttons = new ArrayList<Button>();
   ArrayList<PImage> images = new ArrayList<PImage>();
   ArrayList<PImage> temp_images = new ArrayList<PImage>();
-  ArrayList<Image> processedImages = new ArrayList<Image>();
   ArrayList<Menu> menus = new ArrayList<Menu>();
   ArrayList<sliderBox> sliderBoxes = new ArrayList<sliderBox>();
   ArrayList<Dropdown> dmenus = new ArrayList<Dropdown>();
@@ -25,7 +24,6 @@ class tab extends tabBoundary {
   ArrayList<TextArea> textareas = new ArrayList<TextArea>();
   ArrayList<textBlock> textBlocks = new ArrayList<textBlock>();
   ArrayList<TextBox> textboxes = new ArrayList<TextBox>();
-  ArrayList<vectorText> processedText = new ArrayList<vectorText>();
   ArrayList<String[]> temp_text = new ArrayList<String[]>();
   ArrayList<processing.data.Table> temp_tables = new ArrayList<processing.data.Table>();
   String folder = "";
@@ -37,10 +35,9 @@ class tab extends tabBoundary {
   Slider sliderv;
   Slider sliderh;
   tab navigator;
-  verticaltabs navigatorv;
-  horizontaltabs navigatorh;
   tab child, parent,parentTab;
   tab current_tab, next_tab, previous_tab;
+  color titleColor = color(0),textColor = color(0),tabcol = color(0,255,175) ;
 
 
   ArrayList<tab> tabs = new ArrayList<tab>();
@@ -247,7 +244,7 @@ void setCanvas(tab t){
       t.drawTextboxes();
       t.drawTextareas();
       t.drawTextBlocks();
-      t.drawSliderBoxes();
+      //t.drawSliderBoxes();
     if(t.title!=null&&t.visible){
       t.title.toggle=1;
       t.drawTitle();
@@ -535,19 +532,17 @@ void setCanvas(tab t){
   void clear(){
     textboxes = new ArrayList<TextBox>();
     grids = new ArrayList<Grid>();
-    grids3d = new ArrayList<Grid3D>();
     textareas = new ArrayList<TextArea>();
     //windows = new ArrayList<Window>();
     buttons = new ArrayList<Button>();
     images = new ArrayList<PImage>();
     temp_images = new ArrayList<PImage>();
-    processedImages = new ArrayList<Image>();
     menus = new ArrayList<Menu>();
     dmenus = new ArrayList<Dropdown>();
     tables = new ArrayList<Table_>();
     links = new ArrayList<String>();
     textBlocks = new ArrayList<textBlock>();
-    processedText = new ArrayList<vectorText>();
+    //processedText = new ArrayList<vectorText>();
     temp_text = new ArrayList<String[]>();
     temp_tables = new ArrayList<processing.data.Table>();
   };
@@ -578,7 +573,7 @@ void setCanvas(tab t){
         BMS.currentObject = this;
         
         if(title.label!=null)BMS.currentMouseObject = title.label;
-        println(BMS.currentMouseObject);
+        //println("tab",BMS.currentMouseObject);
         mdown = true;
         docked = false;
         docking = false;
@@ -636,8 +631,8 @@ void setCanvas(tab t){
     for (int i=states.get(state).sliderBoxes.size()-1;i>-1; i--) {
       
       sliderBox s = states.get(state).sliderBoxes.get(i);
-      //s.mouse = getMouse();
-      //s.parentTab = this;
+      s.mouse = getMouse();
+      s.parentTab = this;
       s.draw();
     }
   };
@@ -688,7 +683,7 @@ void setCanvas(tab t){
     canvas.fill(0);
     canvas.noStroke();
     if(border)canvas.stroke(255);
-    canvas.rect(x,y-5,w,5);
+    canvas.rect(x,y-5,w,5,r1,r2,r3,r4);
     
   };
   
@@ -759,7 +754,7 @@ void setCanvas(tab t){
     if (border) {
       canvas.stroke(255, 200);
       canvas.noFill();
-      canvas.rect(0, 0, w, h);
+      canvas.rect(0, 0, w, h,r1,r2,r3,r4);
     }
     canvas.noStroke();
   };
@@ -769,57 +764,59 @@ void setCanvas(tab t){
       canvas.noStroke();
       canvas.fill(255);
       
-      canvas.rect(0, 0, w, h);
-      canvas.fill(0, 50);
-      canvas.rect(0, 0, w, h);
+      canvas.rect(0, 0, w, h,r1,r2,r3,r4);
+      canvas.fill(BMS.tabcol);
+      if(localTheme)canvas.fill(tabcol);
+      canvas.rect(0, 0, w, h,r1,r2,r3,r4);
     }
   };
   
+  //important
   void getFile(){
-    PImage t_img ;
+    //PImage t_img ;
     
-    Image t_Img;
-    String[] t_text;
-    processing.data.Table t_table;
+    //Image t_Img;
+    //String[] t_text;
+    //processing.data.Table t_table;
     
-    ArrayList<Integer> k = new ArrayList<Integer>();
+    //ArrayList<Integer> k = new ArrayList<Integer>();
     
-    if(file.length()>0){
-      if(file.endsWith("jpg")|| file.endsWith("jpeg") ||file.endsWith("png")||file.endsWith("bmp")||
-          file.endsWith("gif")||file.endsWith("JPG")||file.endsWith("JPEG")||file.endsWith("PNG")||
-          file.endsWith("BMP")||file.endsWith("GIF")){
+    //if(file.length()>0){
+    //  if(file.endsWith("jpg")|| file.endsWith("jpeg") ||file.endsWith("png")||file.endsWith("bmp")||
+    //      file.endsWith("gif")||file.endsWith("JPG")||file.endsWith("JPEG")||file.endsWith("PNG")||
+    //      file.endsWith("BMP")||file.endsWith("GIF")){
             
-          t_img = loadImage(file);
-          if(!temp_images.contains(t_img))temp_images.add(t_img);
-          //if(!temp_images.contains(t_img))images.add(t_img);
-          Image img = new Image(t_img);
-          if(!processedImages.contains(img))processedImages.add(img);
-      }
+    //      t_img = loadImage(file);
+    //      if(!temp_images.contains(t_img))temp_images.add(t_img);
+    //      //if(!temp_images.contains(t_img))images.add(t_img);
+    //      Image img = new Image(t_img);
+    //      if(!processedImages.contains(img))processedImages.add(img);
+    //  }
       
-      if(file.endsWith("txt")){
+    //  if(file.endsWith("txt")){
             
-          t_text = loadStrings(file);
-          if(!temp_text.contains(t_text))temp_text.add(t_text);
-      }
+    //      t_text = loadStrings(file);
+    //      if(!temp_text.contains(t_text))temp_text.add(t_text);
+    //  }
       
-      if(file.endsWith("csv")){
+    //  if(file.endsWith("csv")){
             
-          t_table = loadTable(file);
-          if(!temp_tables.contains(t_table))temp_tables.add(t_table);
-      }
+    //      t_table = loadTable(file);
+    //      if(!temp_tables.contains(t_table))temp_tables.add(t_table);
+    //  }
       
-      if(file.endsWith("doc")){
+    //  if(file.endsWith("doc")){
             
-          t_text = WordStream(file);
-          if(!temp_text.contains(t_text))temp_text.add(t_text);
-      }
-      if(file.endsWith("mp3")|| file.endsWith("aiff") ||file.endsWith("ogg")||file.endsWith("flac")||
-          file.endsWith("m4a")||file.endsWith("flac")){
+    //      t_text = WordStream(file);
+    //      if(!temp_text.contains(t_text))temp_text.add(t_text);
+    //  }
+    //  if(file.endsWith("mp3")|| file.endsWith("aiff") ||file.endsWith("ogg")||file.endsWith("flac")||
+    //      file.endsWith("m4a")||file.endsWith("flac")){
             
-          t_table = loadTable(file);
-          if(!temp_tables.contains(t_table))temp_tables.add(t_table);
-      }
-    }
+    //      t_table = loadTable(file);
+    //      if(!temp_tables.contains(t_table))temp_tables.add(t_table);
+    //  }
+    //}
   };
   
   boolean posTab() {
@@ -849,7 +846,6 @@ void setCanvas(tab t){
 
   void drawDynamicImages(ArrayList<PImage> p,int k){
     
-      
     tab t = states.get(state);
     if(t.toggle&&t.visible){
       canvas.beginDraw();
@@ -914,7 +910,7 @@ void setCanvas(tab t){
       // if(parentTab==null)m.mouse = getMouse();
       // else m.mouse = getMouse(mouse);
       m.draw(canvas);
-      }
+    }
   };
 
   void drawTextboxes() {
@@ -958,9 +954,185 @@ void setCanvas(tab t){
       t.displayTabs();
     }
   };
+  
+  
+  void setRadius(float a){
+    r1 = a;
+    r2 = a;
+    r3 = a;
+    r4 = a;
+    
+    title.r1 = a;
+    title.r2 = a;
+    
+    for (int i=0; i<dmenus.size(); i++) {
+      Dropdown d = dmenus.get(i);
+      d.setRadius(a);
+    }
+  };
+  
+  void setAlignment(String s){
+    
+    if(s=="CENTER"||s=="center"||s=="Center"){
+      if(title!=null){
+        title.txoff = (title.w-textWidth(title.label))/2;
+        
+      }
+      
+      for (int i=0; i<windows.size(); i++) {
+        Window w = windows.get(i);
+        //w.x = 5
+      }
+      
+      for (int i=0; i<tables.size(); i++) {
+        Table_ t = tables.get(i);
+        t.x = 5;
+        //(b.w-textWidth(b.label))/2-((b.w-textWidth(b.label))/2)/2
+        t.x = (w-t.w)/2;
+      }
+      for (int i=0; i<textboxes.size(); i++) {
+        TextBox t = textboxes.get(i);
+        t.x = (w-t.w)/2;
+      }
+      
+      for (int i=0; i<textareas.size(); i++) {
+        TextArea t = textareas.get(i);
+        t.x = (w-t.w)/2;
+      }
+      
+      for (int i=0; i<menus.size(); i++) {
+        Menu m = menus.get(i);
+        m.x = 5;
+        m.x = (w-m.w)/2;
+      }
+      
+      for (int i=0; i<buttons.size(); i++) {
+        Button b = buttons.get(i);
+        b.x = (w-b.w)/2;
+      }
+      
+      for (int i=0; i<sliderBoxes.size(); i++) {
+        sliderBox s1 = sliderBoxes.get(i);
+        s1.x = (w-s1.w)/2;
+      }
+      
+      for (int i=0; i<dmenus.size(); i++) {
+        Dropdown d = dmenus.get(i);
+        d.x = (w-d.w)/2;
+        d.txoff = d.w/2-textWidth(d.label)/2;
+        for (int j=0; j<dmenus.get(i).items.size(); j++) {
+          Button d1 = dmenus.get(i).items.get(j);
+          d1.x = (w-d1.w)/2;
+          d1.txoff = (d1.w-textWidth(d1.label))/2;
+        }
+      }
+    }
+    
+    if(s=="RIGHT"||s=="right"||s=="Right"){
+      
+      if(title!=null){
+        title.txoff = (title.w-textWidth(title.label))/2-((title.w-textWidth(title.label))/2)/2;
+        
+      }
+      
+      for (int i=0; i<windows.size(); i++) {
+        Window w = windows.get(i);
+        //w.x = 5
+      }
+      
+      for (int i=0; i<tables.size(); i++) {
+        Table_ t = tables.get(i);
+        t.x = 5;
+        t.x = (w-t.w)/2-((w-t.w)/2)/2;
+      }
+      for (int i=0; i<textboxes.size(); i++) {
+        TextBox t = textboxes.get(i);
+        t.x = (w-t.w)/2-((w-t.w)/2)/2;
+      }
+      
+      for (int i=0; i<textareas.size(); i++) {
+        TextArea t = textareas.get(i);
+        t.x = 5;
+        t.x = (w-t.w)-((w-t.w))/4;
+      }
+      
+      for (int i=0; i<menus.size(); i++) {
+        Menu m = menus.get(i);
+        m.x = 5;
+        m.x = (w-m.w)-((w-m.w))/4;
+      }
+      
+      for (int i=0; i<buttons.size(); i++) {
+        Button b = buttons.get(i);
+        b.x = (w-b.w)-((w-b.w))/4;
+      }
+      
+      for (int i=0; i<sliderBoxes.size(); i++) {
+        sliderBox s1 = sliderBoxes.get(i);
+        s1.x = (w-s1.w)-((w-s1.w))/4;
+      }
+      
+      for (int i=0; i<dmenus.size(); i++) {
+        Dropdown d = dmenus.get(i);
+        d.x = (w-d.w)-((w-d.w))/4;
+        //for (int j=0; j<dmenus.get(i).items.size(); j++) {
+        //  Button d1 = dmenus.get(i).items.get(j);
+        //  d1.x = (w-d1.w)-((w-d1.w))/4;
+        //}
+      }
+    }
+    
+    if(s=="LEFT"||s=="left"||s=="Left"){
+      
+      if(title!=null){
+        title.txoff = 5;
+        
+      }
+      
+      for (int i=0; i<windows.size(); i++) {
+        Window w = windows.get(i);
+        w.x = 5;
+      }
+      
+      for (int i=0; i<tables.size(); i++) {
+        Table_ t = tables.get(i);
+        t.x = 5;
+      }
+      for (int i=0; i<textboxes.size(); i++) {
+        TextBox t = textboxes.get(i);
+        t.x = 5;
+      }
+      
+      for (int i=0; i<textareas.size(); i++) {
+        TextArea t = textareas.get(i);
+        t.x = 5;
+      }
+      
+      for (int i=0; i<menus.size(); i++) {
+        Menu m = menus.get(i);
+        m.x = 5;
+      }
+      
+      for (int i=0; i<buttons.size(); i++) {
+        Button b = buttons.get(i);
+        b.x = 5;
+      }
+      
+      for (int i=0; i<sliderBoxes.size();i++){
+        sliderBox s1 = sliderBoxes.get(i);
+        s1.x = 5;
+      }
+      
+      for (int i=0; i<dmenus.size(); i++) {
+        Dropdown d = dmenus.get(i);
+        d.x = 5;
+        d.txoff = 0;
+        for (int j=0; j<dmenus.get(i).items.size(); j++) {
+          Button d1 = dmenus.get(i).items.get(j);
+          d1.x = 5;
+          d1.txoff = 0;
+        }
+      }
+    }
+  };
 };
-
-
-
-
-

@@ -42,7 +42,7 @@ class Dock{
         
         if(mousePressed&&pos()&&!mdown){
             loc = BMS.currentMouseObject;
-            currentObject = BMS.currentObject;
+            
             update = false;
             mdown = true;
         }

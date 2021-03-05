@@ -15,13 +15,13 @@ class fileOutput {
   };
 
   fileOutput(String location) {
-    appendFile = true;
+    //appendFile = true;
     checkLocation(location);
     open();
   };
   
   fileOutput(String location, boolean m) {
-    if(m)appendFile = true;
+    appendFile = true;
     checkLocation(location);
     open();
     file = dataFile(location);
@@ -73,7 +73,13 @@ class fileOutput {
   };
 
   void write(String s) {
-    if(output!=null)output.println(s);
+    // use this one to append the file created
+    if(output!=null){
+      output.println(s);
+      println("successful write",s);
+      output.flush(); // Writes the remaining data to the file
+      //output.close(); // Finishes the file
+    }
     else print("Create Save File");
   };
 
@@ -82,9 +88,11 @@ class fileOutput {
   };
 
   void write_(String s) {
-    output.print(s);
+    //use this one to overwrite file
+    //output.write(s);
+    output.println(s);
     if(output!=null){
-      println("success",s);
+      println("successful overwrite",s);
       output.flush(); // Writes the remaining data to the file
       output.close(); // Finishes the file
     }else println("failed",location,folderPath);
@@ -177,15 +185,15 @@ class fileOutput {
       }
       file = dataFile(folderPath + "/" + counter + location);
       filePath = file.getPath();
-      appendFile = false;
-      append = true;
+      //appendFile = false;
+      //append = true;
     }
     if(file!=null&&(!file.exists()&&!append2)) {
       //output = createWriter("/data/" + folderPath + "/" + counter + location);
       //println("folderpath " + folderPath + "\\" + counter+"\\" + location);
     }
-
-    if(overWrite||output == null){
+    //overWrite||
+    if(output == null){
       output = createWriter("/data/" + folderPath + "/" + counter + "/"+ location);
       //println("new folderpath " + folderPath + counter + "\\" + location);
       file = dataFile(folderPath + "/" + counter + "/" + location);
@@ -195,7 +203,7 @@ class fileOutput {
     if (debug) println(filePath);
     try {
 
-      FileWriter fw = new FileWriter(file, append);///true = append
+      FileWriter fw = new FileWriter(file, true);///true = append
       BufferedWriter bw = new BufferedWriter(fw);
       output = new PrintWriter(bw);
     }

@@ -2,7 +2,7 @@ class tooltip{
   float x,y,w,h;
 //int 
   String label;
-
+  boolean toggle;
   tooltip(){
         
   };

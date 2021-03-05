@@ -2,14 +2,18 @@ class BMScontrols{
   
   int Mcount;
   HashMap<Object,String> booleans = new HashMap<Object,String>();
+  color bgcol = color(50, 235, 225);
+  color col = color(0, 255, 73), bcol = color(255), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73,100),toggleCol = color(55, 84, 63),
+        tabcol = color(0, 255, 175),sliderbgcol = color(255);
   PApplet applet = null;
-  public boolean gridOpen,gridSeeded,autoSave,autoControl,camOpen,textOpen,videoOpen,audioOpen,voronoiOpen,terrain3d,openSimpleNN,gridCleared = true,mdown;
-  boolean updated;
+  boolean updated,autoSave;
   String currentMouseObject;
   Object currentObject;
+  Menu menuObject;
+  Slider sliderObject;
+  //objectSelected;
   Dropdown dropDownObject;
   String[] Lines;
-  float seed;
   Button checkbox;
   Dock dock;
   public float autoSaveTimeout = 30;
@@ -19,20 +23,16 @@ class BMScontrols{
   ArrayList<TextArea> textAreas = new ArrayList<TextArea>();
   ArrayList<Button> buttons = new ArrayList<Button>();
   ArrayList<Menu> menus = new ArrayList<Menu>();
-  ArrayList<Grid> grids = new ArrayList<Grid>();
-  ArrayList<webcam> cams = new ArrayList<webcam>();
-  ArrayList<GridImg> gridOfImages = new ArrayList<GridImg>();
-  ArrayList<ImgGrid> imagesToGrid = new ArrayList<ImgGrid>();
   ArrayList<tab> tabs = new ArrayList<tab>();
   Boundary bb;
-  fileInput File,Folder;
-  Img imageProcessing,cam;
+  Window main;
+  //fileInput File,Folder;
   Menu menu;
   
-  String[] cameras = Capture.list();
+  //String[] cameras = Capture.list();
   String[] files;
   
-  Capture Cam;
+  //Capture Cam;
   Dropdown dd;
   
   BMScontrols(PApplet Applet){
@@ -55,52 +55,24 @@ void draw(){
 };
 
 void begin(){
-  File = new fileInput();
-  Folder = new fileInput(true);
-  setupTwitter();
+  //File = new fileInput();
+  //Folder = new fileInput(true);
+  //String []ss = {"test1","test2","test3"};
+  //sliderBox s = new sliderBox(100,100,90,10,ss);
   setupWindows();
   setupMenus();
-  setupRGB();
-  setupPlots();
+  //setupRGB();
   setupReset();
-  setupOthers();
-  attractors = new Attractor();
-  setupTabs();
+  
   setupDock();
-  //setupButtons();
-  openTwitter();
-  checkbox = new Button(25,25,20,20,"checkbox");
-  checkbox.radio = true;
-  tabsetup();
-  spawnRaces("human",5,40);
-  String [] ddLabels = {"hello"};
-  //dd = new Dropdown(100,200,90,"Select",ddLabels,0);
-  //bb = new Boundary(0,0,W,H);
-  setupSigmoid();
-  slider_functions();
-  imageProcessing = new Img(0);
-  cam = new Img(6);
-  //audio = new Img(2);
-  //Text = new
-  //neuralnet = new Network(28,10,10,1);
 };
 
-void setupButtons(){
-  //Button b = new Button(100,200,50,20,"terrain");
-  //b.togglebox = true;
-  //buttons.add(b);
-};
 
 void setupDock(){
   dock = new Dock(0,height -22,width,24);
   //dock = b;
 };
 
-void setupTwitter(){
-  
-  String [] keywords = { "corona virus","uk" ,"United Kingdom", "China"};
-  twitterKeywords = new TwitterKeyword(keywords);
-};
 
 void setupWindows(){
   main = new Window(23,20,W-46,H-90-20);
@@ -129,127 +101,36 @@ void setupWindows(){
 void setupMenus(){
   // file----------------------------------------------
   
+  //println("iugoiugoiugoiug", Sliders.size());
+  //String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
+  String [] flabels = {"Background","Camera"};
+  file = new Menu(20,0,50,70,"File",flabels,0);
   
-  String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
-  file = new Menu(0,0,30,20,"File",flabels,0);
+  BMS.menus.add(file);
   
-  menus.add(file);
-  
-
   //----------------------file -----------------------------------
   if(file!=null){
   String []glabels = {"Terrain","Img","Cam","Video","Audio","Text"};
-  file.items.get(2).submenu  = new Menu(file.items.get(2).x+file.items.get(2).w,file.items.get(2).y,70,glabels,0);
-  file.set_link(2);
-  String [] attractor_labels = {"Show/Hide","On/Off"};
-  file.items.get(5).submenu = new Menu(file.items.get(5).x+file.items.get(5).w,file.items.get(5).y,100,attractor_labels,0);
-  file.set_link(5);
+  file.items.get(0).submenu  = new Menu(file.items.get(0).x+file.items.get(0).w,file.items.get(0).y,70,glabels,0);
+  file.setLink(0);
   }
-  //-------------------------------------------------------------------
-  String [] shapesLabels = {"Line drawing","Connected Lines","Ellipse","Rectangle","Tri","Poligon","C Poligon","Bezier","Spline","none","Arc","Path Straight","Path Corner"};
-  shapes = new Menu(file.x + file.w,0,50,20,"Shapes",shapesLabels,0);
-  menus.add(shapes);
+  
 
-  //-------------------------------------------------------------------------------------------
-  //physics------------------------------------------------------------------------
-  String [] physicsLabels = {"Physics","Gravity","Electromagnetism","Strong","Weak"};
-  physics = new Menu(shapes.x + shapes.w,0,50,20,"Physics",physicsLabels,0);
-  menus.add(physics);
-  //Map--------------------------------------------------------------------
-  
-  String []mapLabels = {"Humans","Plants","Animals","Minerals","Metals"};
-  
-  mapMenu = new Menu(physics.x+physics.w,0,40,20,"Maps",mapLabels,0);
-  menus.add(mapMenu);
-
-  //---------------------------------------------------------------------------
-  
-  String [] neuralNetworkMenuLabels = {"Open","Close","Simple"};
-  //file.horizontal = false;
-  neuralNetworkMenu = new Menu(mapMenu.x+mapMenu.w,mapMenu.y,90,20,"Neural Network",neuralNetworkMenuLabels,0);
-  menus.add(neuralNetworkMenu);
-  String [] twitterMenuLabels = {"Stream","Show Keywords","Add Keyword","Stream To File","Open Saved Stream"};
-  //file.horizontal = false;
-  twitter = new Menu(neuralNetworkMenu.x+neuralNetworkMenu.w,neuralNetworkMenu.y,60,20,"Twitter",twitterMenuLabels,0);
-  menus.add(twitter);
-  
-  
-  // grids---------------------------------------------------------------------------------------------
-  
-  //images.add(loadImage("leaves.jpg"));
-  images.add(loadImage("C:\\Users\\paul goux\\Desktop\\b.jpeg"));
-  images.add(loadImage("btfly.jpeg"));
-  //gimg = new GridImg(W/2-600,H/2-300,1000,660,images);
-  gplain = new Grid(W/2-600,H/2-300,1000,780,70,50,6);
-  gplain.visible = true;
-  //if(BMS.camOpen)gcam = new Cam(W/2-600,H/2-300,1000,660);
-  // if(BMS.gridOpen){
-  //   g = new Grid(23,H/2-310,1000,500,50);
-    
-  //   g.visible = true;
-  //   g.entities = true;
-  //   g.terrain2d = true;
-  //   g.perlheight = true;
-  //   g.trackmouse = true;
-  //   g.border = false;
-  //   g.lim = 4;
-  //   g.forward = true;
-  //   g.trackmouse = true;
-  //   g.elasticity = 0.7;
-  //   g.fill = true;
-  //   g.hover = true;
-  //   g.circle = false;
-  //   g.bounce = true;
-  //   g.attractor = true;
-  // }
-  file.set(6,0);
-
-  
-  //---------------------Entities-----------------------------------
-  
-  String[] Entities_sub_Labels = {"Show","Add Human","Add Race","Follow Bound","Pause",
-                                  "Debug","Adjust","Separation","Cohesion","Alignment","Sliders",
-                                  "Births","Deaths","Load","Save","Reset"};
-  
-  Entities_sublist = new Menu(W-90,H/2-70,90,Entities_sub_Labels,0);
-  Entities_sublist.draggable = true;
-  
-  Button debug = Entities_sublist.items.get(5);
-  
-  String [] debuglist = {"Family Ties", "CZone","Target A", "Target B","Heading","Eyes","info","Hide Sliders","QuadP","Field","Limit",};
-  
-  Entities_sublist.items.get(5).submenu = new Menu(debug.x-80,debug.y,90,debuglist,0);
-  Entities_sublist.items.get(5).submenu.parentRight = true;
-  Entities_sublist.items.get(5).submenu.draggable = true;
-  //Entities_debug.parentRight = true;
-  String[] Labelsf = {"Total","FrameRate","B room","Cohesion","Separation","Alignment","Max Force","Max Speed","Wanderm","SceneW", "SceneH","B Cohesion","B Separ.","B room B","Tscale","C Cohesion","C Separ.","C Align","Friction","Min","D Sep"};
-  fRate = new sliderBox(90,350,90,5,Labelsf);
-  fRate.menu.visible = false;
-  fRate.menu.draggable = true;
-  /*----------------------------------------------------------------------
-  ---img sliders------------------------------------------------------------*/
-  
-  String [] imgsliderMenu_Labels = {"Conv up","Conv right","Conv  down","Conv left",
-                                    "Threshold","conv","mdist","convvp","convvn",
-                                    "convhp","convhn"};
-                                    
-  imgsliderMenu = new Menu(70,400,170,0);
-  imgsliderList = new sliderBox(imgsliderMenu.x,imgsliderMenu.y,90,10,imgsliderMenu,imgsliderMenu_Labels);
+  String []ss = {"test1","test2","test3"};
+  float a = 200;
+  sliderBox s = new sliderBox(a,100,90,10,ss);
+  String [] ss1 = {"red","green","blue"};
+  float [] v1 = {52, 235, 225};
+  s = new sliderBox(a,320,90,10,ss1,v1,true);
+  s.visible = false;
+  sliderBoxes.add(s);
+  Slider s1 = new Slider(a,200,90,10,"test");
+  Sliders.add(s1);
+  s1 = new Slider(a,220,90,10,"test1");
+  Sliders.add(s1);
   
 };
 
-void setupRGB(){
-  //rgb_slider = new rgb_Slider(500,200,90,40,15);
-  //rgb_slider.display("vertical");
-  //rgb_slider.set("color");
-  //rgb_slider.set("radio");
-};
-
-void setupPlots(){
-  plot = new Plot_2D(main.x,main.y,main.w,main.h,29,30);
-  plot.col = color(0,255,0);
-  plot.line = true;
-};
 
 void setupReset(){
   reset_dialogue = new Menu(W/2 - 136,H/2 - 22,275,45,"Are you sure you want to exit?");
@@ -270,126 +151,6 @@ void setupReset(){
   no.parent = reset_dialogue;
 };
 
-void setupOthers(){
-   textb1 = new TextArea(200,300,200,40,20,4,Lines);
-   //textb1.border = true;
-   textboxes.add(textb1);
-   //textb1.parent = mapMenu;
-   txtb1 = new TextBox(200+200,300,200,40,20,"Type text here!");
-   txtb1.border = true;
-   textb.add(txtb1);
-};
-
-void setupTabs(){
-  String [] tabnames = {"Project","Data :","Processing :","Weights :","Bias :","Activation :","Outputs :"};
-  tab = new horizontaltabs(100,100,135,200,tabnames);
-  
-  String [] options = {"Video","Images","Audio","Text","Humans","Plants","Animals","Mazecrawler","Energy","Celluloid"};
-  String [] images = {"Feature Extraction","Facial Recognition","Text analysis","Handwriting Detection","Facial Recognition","Facial Mimicry"};
-  String [] audio = {"Speech Synthesis","Language Translator","Voice Detection"};
-  String [] text = {"Text Analysis","sentiment Analysis","Text writer"};
-  String [] livingCreatures = {"Lifespan","Velocity","Connections","Activities","Skill"};
-  
-  Dropdown dmenu = new Dropdown(5,tab.h - 150,tab.w - 55,"Start",options,0);
-  tab tab0 = tab.tabs.get(0);
-  
-  String []s3 = {"Train", "Test"};
-  Dropdown d2 = new Dropdown(5,tab0.h - 70,tab0.w - 55,"Train/Test",s3,0);
-  
-  tab0.add(0,d2);
-  tab0.add(0,dmenu);
-  
-  tab tab1 = tab.tabs.get(1);
-      
-  tab1.addState(10);
-  String []submenuLabels = {"Open Window","From ClipBoard","Search Web","Record"};
-  Dropdown dmenu1 = new Dropdown(5,tab1.h - 150,tab1.w - 55,"Locate",submenuLabels,0);
-  Button b = new Button(5,tab1.h - 70,tab1.w - 55,20,"Next -->");
-  //tab1.clear();
-  tab1.setTitle(0,"Data : Video");
-  tab1.add(0,dmenu1);
-  tab1.add(0,b);
-  
-  String []s2 = {"From File","From ClipBoard","Search Web"};
-  Dropdown d1 = new Dropdown(5,tab1.h - 150,tab1.w - 55,"Locate",s2,0);
-  
-  tab1.setTitle(1,"Data : Image");
-  tab1.add(1,d1);
-  tab1.add(1,b);
-  
-  String []s5 = {"From File","From ClipBoard","Search Web","Record"};
-  dmenu1 = new Dropdown(5,tab1.h - 150,tab1.w - 55,"Locate",s5,0);
-  b = new Button(5,tab1.h - 70,tab1.w - 55,20,"Next -->");
-  
-  tab1.setTitle(2,"Data : Audio");
-  tab1.add(2,dmenu1);
-  tab1.add(2,b);
-  
-  String []s6 = {"From File","From ClipBoard","Search Web","Record"};
-  dmenu1 = new Dropdown(5,tab1.h - 150,tab1.w - 55,"Locate",s6,0);
-  b = new Button(5,tab1.h - 70,tab1.w - 55,20,"Next -->");
-  
-  tab1.setTitle(3,"Data : Text");
-  tab1.add(3,dmenu1);
-  tab1.add(3,b);
-  
-  String []s4 = {"Position","Velocity","Lifespan","Offspring","Happiness","Carrying Capacity","Rest","Dexterity","Strength","Health"};
-  Dropdown d3 = new Dropdown(5,tab1.h - 150,tab1.w - 55,"Locate",s4,0);
-  
-  tab1.setTitle(4,"Data : Entities");
-  tab1.add(4,d3);
-  tab1.add(4,b);
-  
-  tab tab2 = tab.tabs.get(2);
-  
-  String [] submenuLabels2 = {"Load From File","K-clustering","Blur","Line detect","Threshold","Pooling","Flatten","Max Pooling", "Ave Pooling","Dot Pooling","DropOut","FFT"};
-  dmenu1 = new Dropdown(5,tab2.h - 150,tab2.w - 55,"Convolution",submenuLabels2,5);
-  b = new Button(5,tab2.h - 70,tab2.w - 55,20,"Next -->");
-  
-  tab2.buttons.add(b);
-  tab2.dmenus.add(dmenu1);
-  
-  tab tab3 = tab.tabs.get(3);
-  
-  String [] submenuLabels3 = {"From File :","Randomize","Manually"};
-  b = new Button(5,tab3.h - 70,tab3.w - 55,20,"Next -->");
-  d1 = new Dropdown(5,tab3.h - 150,tab3.w - 55,"Assign",submenuLabels3,5);
-  
-  tab3.dmenus.add(d1);
-  tab3.buttons.add(b);
-  
-  tab tab4 = tab.tabs.get(4);
-  
-  d1 = new Dropdown(5,tab4.h - 150,tab4.w - 55,"Assign",submenuLabels3,0);
-  b = new Button(5,tab4.h - 70,tab4.w - 55,20,"Next -->");
-  
-  tab4.dmenus.add(d1);
-  tab4.buttons.add(b);
-  
-  tab tab5 = tab.tabs.get(5);
-  
-  String [] submenuLabels5 = {"Sigmoid","Tan-h","Relu","Threshold","Binary Step","Linear"};  
-  d1 = new Dropdown(5,tab5.h - 150,tab5.w - 55,"Assign",submenuLabels5,5);
-  b = new Button(5,tab5.h - 70,tab5.w - 55,20,"Next -->");
-  
-  tab5.dmenus.add(d1);
-  tab5.buttons.add(b);
-  
-  tab tab6 = tab.tabs.get(6);
-  String [] submenuLabels6 = {"Random","Manual"};
-  
-  d1 = new Dropdown(5,tab6.h - 150,tab6.w - 55,"Assign",submenuLabels6,5);
-  b = new Button(5,tab6.h - 70,tab6.w - 55,20,"Finish:");
-  
-  tab6.dmenus.add(d1);
-  tab6.buttons.add(b);
-  
-  tab.toggle = true;
-  
-  String [] a = {"hello","goodbye","hello1","goodbye1","hello2","goodbye2"};
-  d1 = new Dropdown(200,200,200, a);
-  d1.draggable = true;
-};
 
 void loadImg(){
     
@@ -397,15 +158,19 @@ void loadImg(){
 
 void run(){
   globalLogic();
-  manageNN();
+  //Menu m1 = sliderBoxes.get(1).menu;
+  //Slider r = m1.sliders.get(0);
+  //Slider g = m1.sliders.get(1);
+  //Slider b = m1.sliders.get(2);
+  //bgcol = color(r.value,g.value,b.value);
   mainFunctions();
-  manageGrid();
   displayButtons();
   menuFunctions();
-  //neuralnet.run(100);
-  //bb.draw3();
-  //dd.displayDropdown();
-  //checkbox.draw();
+  sliderBoxFunctions();
+  sliderFunctions();
+  for(Menu menu : BMS.menus)menu.click();
+  //menus.get(0).self_toggle(1);
+  //menus.get(0).toggle2(0,sliderBoxes.get(1),"visible");
 };
 
 void displayButtons(){
@@ -420,34 +185,9 @@ void displayButtons(){
 
 
 void mainFunctions(){
-  if(entities.get(0).toggle)frameRate(fRate.get(1));
-  fill(255);
-  plot.draw();
-  //textbox(btn40,humans);
-  manageClipBoard();
-  attractors.functions();
-  gplain.grid_functions();
-  displayTextBoxes();
   main.render();
-  displayEntities();
-  //fmenu.display();
-  fmenu.display_grid();
-  //gimg.img_functions();
-  imageProcessing.menus();
-  cam.menus();
-  //audio.drawMenus();
-  tab.displayTabs();
-  tabfunctions();
 };
 
-void displayEntities(){
-  for(int i=entities.size()-1;i>-1;i--){
-    Entity e = entities.get(i);
-    
-    e.runh();
-    e.life();
-  }
-};
 
 void displayTextBoxes(){
   for(TextArea textb : textboxes){
@@ -460,12 +200,10 @@ void displayTextBoxes(){
 };
 
 void manageClipBoard(){
-  if(getTextFromClipboard ()!=clipBoard)clipBoard = getTextFromClipboard ();
+  //if(getTextFromClipboard ()!=clipBoard)clipBoard = getTextFromClipboard ();
 };
 
 void click(){
-  //reload();
-  grid();
   buttons();
 };
 
@@ -479,37 +217,14 @@ void reload(){
 void buttons(){
   
   file.self_toggle(6);
-  file.toggle(3,plot,"toggle");
-  file.toggle(0,fmenu,"toggle");
-  yes.self_Toggle();
-  no.self_Toggle();
+  yes.self_toggle();
+  no.self_toggle();
   String [] gridm = {"forward","backward","pause"};
   Menu grid = file.items.get(2).submenu;
   Menu attractor = file.items.get(5).submenu;
-  if(file.index==2){
-    grid.toggle(0,BMS,"gridOpen");
-    grid.toggle(1,imageProcessing,"toggle");
-    grid.toggle(2,BMS,"camOpen");
-    grid.toggle(3,BMS,"videoOpen");
-    grid.toggle(4,BMS,"audioOpen");
-    grid.toggle(5,BMS,"textOpen");
-    //{"Terrain","Img","Cam","Video","Audio","Text"};
-  }
   
-  attractor.toggle(0,attractors,"show");
-  attractor.toggle(1,attractors,"toggle");
   
-  String [] time_bool = {"forward","backward","pause"};
-  //----------entities map menu------------------------
-  for(int i=0;i<entities.size();i++){
-    mapMenu.toggle(i,entities.get(i),"toggle");
-    //mapmenu.toggle(1,entities.get(1),"toggle");
-    //mapmenu.toggle(2,entities.get(2),"toggle");
-    //mapmenu.toggle(3,entities.get(3),"toggle");
-    //mapmenu.toggle(4,entities.get(4),"toggle");
-    //mapmenu.toggle2(5,g,"toggle");
-    //mapmenu.toggle(6,g,"toggle");
-  }
+
   //----------Shapes------------------------
   String [] shapes_bool = {"toggle","connectedlines","circle","square","tri","bezier","none"};
   
@@ -551,234 +266,47 @@ void buttons(){
   main.pallete.toggle(17,main,"reset");
   //main.complexsub.toggle(0,main,"cfinish");
   
-  //----------Entities-----------------
-  
-  Entities_sublist.toggle(0,entities.get(0),"visible");
-  Entities_sublist.toggle(1,entities.get(0),"addh");
-  Entities_sublist.toggle(2,entities.get(0),"boundary");
-  Entities_sublist.toggle(3,entities.get(0),"followb");
-  Entities_sublist.toggle(4,entities.get(0),"pause");
-  Entities_sublist.toggle(6,entities.get(0),"dynamic");
-  Entities_sublist.toggle(7,entities.get(0),"separationManager");
-  Entities_sublist.toggle(8,entities.get(0),"cohesionManager");
-  Entities_sublist.toggle(9,entities.get(0),"alignmentManager");
-  Entities_sublist.toggle(10,entities.get(0),"showsliders");
-  Entities_sublist.toggle(11,entities.get(0),"Birth");
-  Entities_sublist.toggle(12,entities.get(0),"Death");
-  Entities_sublist.click(13,entities.get(0),"reset");
-  
-  Menu debug = Entities_sublist.items.get(5).submenu;
-  
-  debug.toggle(0,entities.get(0),"familyties");
-  debug.toggle(1,entities.get(0),"showbroom");
-  debug.toggle(2,entities.get(0),"showta");
-  debug.toggle(3,entities.get(0),"showtb");
-  debug.toggle(4,entities.get(0),"showheading");
-  debug.toggle(5,entities.get(0),"showview");
-  debug.toggle(6,entities.get(0),"info");
-  debug.toggle(7,entities.get(0),"hidesliders");
-  debug.toggle(8,entities.get(0).scene,"showq");
-  debug.toggle(9,entities.get(0).scene,"showf");
-  
-  neuralNetworkMenu.toggle(0,tab,"toggle");
-  neuralNetworkMenu.toggle2(1,tab,"toggle");
-  neuralNetworkMenu.toggle(2,this,"openSimpleNN");
-  //if(neuralNetworkMenu.items.get(2).pos()&&mousePressed) openSimpleNN= true;
-  
-  twitter.toggle(0,twitterKeywords,"toggle");
-  
-  Menu options = plot.options;
-  
-  options.toggle(0,plot,"grid");
-  options.toggle(1,plot,"axis");
-  options.toggle(2,plot,"showMouse");
-  options.toggle(3,plot,"labels");
-  options.toggle(4,plot,"showTab");
-  options.toggle(5,plot,"loadRdata1");
-  options.toggle(6,plot,"loadRdata2");
-  options.toggle(9,plot,"clear");
-  options.toggle(10,plot,"toggle");
-  
 };
 
-void grid(){
-  //-------------pallete-------------------------
-  String [] timebool = {"forward","backward","pause"};
-  if(g!=null){
-  g.pallete.draggable = true;
-  g.pallete.toggle(0,g,"circle");
-  g.pallete.toggle(1,g,"visible");
-  g.pallete.toggle(2,g,"graph");
-  g.pallete.toggle(3,g,"attractor");
-  g.pallete.sptoggle(4,g,"forward",timebool);
-  g.pallete.sptoggle(5,g,"backward",timebool);
-  g.pallete.sptoggle(6,g,"pause",timebool);
-  g.pallete.toggle(7,g,"heading");
-  //g.pallete.click(8,g,"save");
-  g.pallete.toggle(9,g,"load");
-  g.pallete.toggle(10,g,"contour");
-  g.pallete.toggle(11,g,"mouse");
-  g.pallete.toggle(12,g,"reset");
-  g.pallete.toggle(13,g,"populateBoundaries");
-  g.pallete.toggle(14,g,"PopulateSpecies");
-  g.pallete.toggle(15,g,"debug");
-  g.pallete.toggle(16,g,"saveImage");
-  }
-};
-
-void slider_functions(){
-  
-  //--------img-------------------------------
-  
-  imgsliderList.set(0,1,-1,gimg,"convup");
-  imgsliderList.set(1,1,-1,gimg,"convright");
-  imgsliderList.set(2,1,-1,gimg,"convdown");
-  imgsliderList.set(3,1,-1,gimg,"convleft");
-  imgsliderList.set(4,-100,300,gimg,"threshold");
-  imgsliderList.set(5,1,-1,gimg,"conv");
-  imgsliderList.set(6,20,300,gimg,"mdist");
-  imgsliderList.set(7,1,-1,gimg,"convvp");
-  imgsliderList.set(8,1,-1,gimg,"convvn");
-  imgsliderList.set(9,1,-1,gimg,"convhp");
-  imgsliderList.set(10,1,-1,gimg,"convhn");
-  
-  //----------Entities------------
-  
-  fRate.setint(0,1,4,entities.get(0).scene,"limit");
-  fRate.set(1,0,60);
-  fRate.set(2,0,200,entities.get(0),"breathingroom");
-  fRate.set(3,-100,100,entities.get(0),"cohesion");
-  fRate.set(4,-100,100,entities.get(0),"separation");
-  fRate.set(5,-100,100,entities.get(0),"alignment");
-  fRate.set(6,-50,50,entities.get(0),"alimit");
-  fRate.set(7,-50,50,entities.get(0),"vlimit");
-  fRate.set(8,0,5,entities.get(0),"wanderm");
-  fRate.set(9,50,1200,entities.get(0),"w");
-  fRate.set(10,50,600,entities.get(0),"h");
-  fRate.set(11,-100,100,entities.get(0),"cohesionb");
-  fRate.set(12,-100,100,entities.get(0),"separationb");
-  fRate.set(13,0,200,entities.get(0),"breathingroomb");
-  fRate.set(14,0,0.5,entities.get(0),"tscale");
-  fRate.set(16,-50,50,entities.get(0),"separationc");
-  fRate.set(15,-50,50,entities.get(0),"cohesionc");
-  fRate.set(17,-50,50,entities.get(0),"alignmentc");
-  fRate.set(18,0,1,entities.get(0),"mu");
-  fRate.set(19,0,200,entities.get(0),"min");
-  fRate.set(20,-100,100,entities.get(0),"separationd");
-  
-  //---------grid-------------------
-  
-  if(g!=null){
-    //sliderMenu.set(0,-1,1,g,"zoom","sdown");
-    //sliderMenu.set(1,0,255,g,"sealevel","sdown");
-    //sliderMenu.set(2,0,255,g,"groundlevel2","sdown");
-    //sliderMenu.set(3,0,255,g,"grasslevel","sdown");
-    //sliderMenu.set(4,0,255,g,"mountainlevel","sdown");
-    //sliderMenu.set(5,-200,200,g,"distance","sdown");
-    //sliderMenu.set(6,-200,200,g,"vdistance","sdown");
-    //sliderMenu.set(7,-200,200,g,"hdistance","sdown");
-    //sliderMenu.set(8,-360,360,g,"xrot","sdown");
-    //sliderMenu.set(9,-360,360,g,"yrot","sdown");
-    //sliderMenu.set(10,-360,360,g,"zrot","sdown");
-    //sliderMenu.set(11,0,1,g,"xvar","sdown");
-    //sliderMenu.set(12,0,2,g,"noise""sdown");
+void sliderBoxFunctions(){
+  //println("slidersize",sliderBoxes.size());
+  for(int i=0;i<sliderBoxes.size();i++){
     
-    g.sliderMenu.set(0,-1,1,g,"scale");
-    g.sliderMenu.set(1,0,2*g.amp1,g,"sealevel");
-    g.sliderMenu.set(2,0,2*g.amp1,g,"groundlevel");
-    g.sliderMenu.set(3,0,2*g.amp1,g,"grasslevel");
-    g.sliderMenu.set(4,0,2*g.amp1,g,"mountainlevel");
-    g.sliderMenu.set(12,0,0.05,g,"scale1");
-    g.sliderMenu.set(13,0,10,g,"amp1");
-    g.sliderMenu.set(14,1,4,g,"freq1");
-    g.sliderMenu.setint(15,0,10,g,"octaves");
-    g.sliderMenu.set(16,-1,1,g,"persistance");
-    g.sliderMenu.set(17,1,10,g,"lacunarity");
-    g.sliderMenu.set(18,-100000,100000,g,"seed");
-  }
-};
-
-void manageGrid(){
-  if(gridOpen&&g==null){
-    g = new Grid(23,H/2-310,1200-45,main.h,5);
-    g.pallete.items.get(1).toggle = 1;
-    g.toggle=true;
-    gridSeeded = false;
-    gridCleared = false;
-    g.sliderMenu.set(0,-1,1,g,"scale");
-    g.sliderMenu.set(1,0,2*g.amp1,g,"sealevel");
-    g.sliderMenu.set(2,0,2*g.amp1,g,"groundlevel");
-    g.sliderMenu.set(3,0,2*g.amp1,g,"grasslevel");
-    g.sliderMenu.set(4,0,2*g.amp1,g,"mountainlevel");
-    g.sliderMenu.set(12,0,0.05,g,"scale1");
-    g.sliderMenu.set(13,0,10,g,"amp1");
-    g.sliderMenu.set(14,1,4,g,"freq1");
-    g.sliderMenu.setint(15,0,10,g,"octaves");
-    g.sliderMenu.set(16,0,1,g,"persistance");
-    g.sliderMenu.set(17,1,10,g,"lacunarity");
-    g.sliderMenu.set(18,-100000,100000,g,"seed");
-    g.canvas = createGraphics(width,height);
-    g.canvas2 = createGraphics(width,height);
-    g.begin = true;
-    g.sUpdate = true;
-  }
-  if(gridOpen&&g!=null){
-    if(g!=null)g.grid_functions();
-    }
-
-  if(!gridOpen){
-    g = null;
-    if(!gridCleared){
-      Runtime.getRuntime().gc();
-      gridCleared = true;
-    }
-    if(!gridSeeded)gridSeeded = true;
+    sliderBox s = sliderBoxes.get(i);
+    if(s.visible)s.draw();
+    if(i==1)s.setColor();
+    //s.tooltip.draw();
+    //for(int i=0
+    
+    //s.menu.sliderFunctions();
+    //if(mousePressed)println("sliders",sliderBoxes.size());
     
   }
-  
-  if(BMS.camOpen){
-    if(gcam==null){
-      gcam = new webcam(applet);
-      cam.toggle = true;
-    }else gcam.display(cam.canvas);
-    }else if(gcam != null){
-      gcam.cam.stop();
-      cam.toggle = false;
+};
 
-      gcam = null;
-  }
-  if(BMS.textOpen){
-    if(words==null){
-      words = new vectorText();
-      words.toggle = true;
-    }else words.display();
-  }else if(words != null){
-      words.toggle = false;
-      words = null;
-  }
-  if(BMS.audioOpen){
-    if(audio==null){
-      audio = new audioData(applet);
-      audio.toggle = true;
-    }else audio.drawMenus();
-  }else if(audio != null){
-      audio.toggle = false;
-      audio = null;
+void sliderFunctions(){
+  //if(mousePressed)println("sliders",Sliders.size());
+  for(int i=0;i<Sliders.size();i++){
+    
+    Slider s = Sliders.get(i);
+    s.draw();
+    s.mouseFunctions();
+    if(i==0)s.set(0,20);
+    if(i==1)s.setint(0,6);
+    //s.tooltip.draw();
+    //for(int i=0
+    
+    //s.menu.sliderFunctions();
+    //if(mousePressed)println("sliders",sliderBoxes.size());
+    
   }
 };
 
-void manageNN(){
-  if(openSimpleNN&&neuralnet==null){
-    neuralnet = new Network(28,10,10,2);
-  }
-  if(!openSimpleNN)neuralnet = null;
-  if(neuralnet!=null)neuralnet.run(100);
-};
 
 void menuFunctions(){
   
   Mcount = 0;
-  
+  //if(mousePressed)println("m size",BMS.menus.size());
   for(int i=0;i<BMS.menus.size();i++){
     
     Menu m = BMS.menus.get(i);
@@ -797,9 +325,10 @@ void menuFunctions(){
   //     }
   // }
   
+    
+  }
   if(Mcount>0)open_menus = true;
   else open_menus = false;
-  }
 };
 
 void boundariesNscenes(){
@@ -808,9 +337,6 @@ void boundariesNscenes(){
   //Boundaries--------------------------------------------
 };
 
-void startCam(){
-  Cam.start();
-};
 
 void autoSave(){
   
@@ -872,20 +398,6 @@ void saveMenu(){
   }
 };
 
-void saveGrid(){
-  
-  for(int i=0;i<grids.size();i++){
-    Grid g = grids.get(i);
-    
-    g.save();
-  }
-  
-  for(int i=0;i<cams.size();i++){
-    webcam c = cams.get(i);
-    
-    //c.save();
-  }
-};
 
 void saveTabs(){
   
@@ -957,22 +469,6 @@ void globalLogic(){
     globaldown = false;
   }
 
-  // if(currentObject!=null){
-  //   Field field = null;
-  //   try {
-
-  //     field = currentObject.getClass().getField("docked"); 
-  //     boolean value = field.getBoolean(field);
-
-  //     if(value){
-  //       currentObject = null;
-  //     }
-  //   }catch (NullPointerException e) {
-  //   }catch (NoSuchFieldException e) {
-  //   }catch (IllegalAccessException e) {
-  //   }
-  //   currentObject = null;
-  // }
 };
   
 };

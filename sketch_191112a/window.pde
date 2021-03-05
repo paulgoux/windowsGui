@@ -740,7 +740,7 @@ class Window extends Scene{
           if(currentp.charAt(size-1)!='\\')currentp += "\\";
           String file = currentp + b.blabel;
           currentf = file;
-          if(launchable)launch(file);
+          //if(launchable)launch(file);
           smdown = true;
         }
       }}}
