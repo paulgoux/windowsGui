@@ -4,7 +4,7 @@ class BMScontrols{
   HashMap<Object,String> booleans = new HashMap<Object,String>();
   color bgcol = color(50, 235, 225);
   color col = color(0, 255, 73), bcol = color(255), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73,100),toggleCol = color(55, 84, 63),
-        tabcol = color(0, 255, 175),sliderbgcol = color(255);
+        tabcol = color(0, 150, 255),sliderbgcol = color(255);
   PApplet applet = null;
   boolean updated,autoSave;
   String currentMouseObject;
@@ -23,6 +23,8 @@ class BMScontrols{
   ArrayList<TextArea> textAreas = new ArrayList<TextArea>();
   ArrayList<Button> buttons = new ArrayList<Button>();
   ArrayList<Menu> menus = new ArrayList<Menu>();
+  ArrayList<radioMenu> radioMenus = new ArrayList<radioMenu>();
+  ArrayList<toggleMenu> toggleMenus = new ArrayList<toggleMenu>();
   ArrayList<tab> tabs = new ArrayList<tab>();
   Boundary bb;
   Window main;
@@ -61,16 +63,14 @@ void begin(){
   //sliderBox s = new sliderBox(100,100,90,10,ss);
   setupWindows();
   setupMenus();
-  //setupRGB();
   setupReset();
-  
   setupDock();
 };
 
 
 void setupDock(){
   dock = new Dock(0,height -22,width,24);
-  //dock = b;
+  dock.add(fmenu);
 };
 
 
@@ -94,8 +94,13 @@ void setupWindows(){
   header.border = false;
   footer.border = true;
   footer.col = 0;
-  
+  //println(main);
   fmenu = new Window(200,200,200,200,"C:\\Users\\paul goux\\");
+  fmenu.setRadius(10);
+  fmenu.quickAccess = true;
+  
+  
+  
 };
 
 void setupMenus(){
@@ -103,7 +108,7 @@ void setupMenus(){
   
   //println("iugoiugoiugoiug", Sliders.size());
   //String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
-  String [] flabels = {"Background","Camera"};
+  String [] flabels = {"Background","Camera","Window"};
   file = new Menu(20,0,50,70,"File",flabels,0);
   
   BMS.menus.add(file);
@@ -118,17 +123,24 @@ void setupMenus(){
 
   String []ss = {"test1","test2","test3"};
   float a = 200;
-  sliderBox s = new sliderBox(a,100,90,10,ss);
+  sliderBox s = new sliderBox(a,100,90,90,10,ss,0);
+  //s.setRadio();
   String [] ss1 = {"red","green","blue"};
   float [] v1 = {52, 235, 225};
   s = new sliderBox(a,320,90,10,ss1,v1,true);
   s.visible = false;
   sliderBoxes.add(s);
-  Slider s1 = new Slider(a,200,90,10,"test");
+  Slider s1 = new Slider(a,50,90,10,"test");
   Sliders.add(s1);
-  s1 = new Slider(a,220,90,10,"test1");
+  s1 = new Slider(a,70,90,10,"test1");
   Sliders.add(s1);
+  String [] ss2 = {"red","green","blue"};
+  radioMenu rmenu = new radioMenu(20,100,50,ss2);
+  toggleMenu tmenu = new toggleMenu(50,250,50,ss2);
+  //Button b1 = new Button(20,100,50,20,ss2);
   
+  //radioMenus.add(rmenu);
+  toggleMenus.add(tmenu);
 };
 
 
@@ -158,19 +170,50 @@ void loadImg(){
 
 void run(){
   globalLogic();
-  //Menu m1 = sliderBoxes.get(1).menu;
-  //Slider r = m1.sliders.get(0);
-  //Slider g = m1.sliders.get(1);
-  //Slider b = m1.sliders.get(2);
-  //bgcol = color(r.value,g.value,b.value);
-  mainFunctions();
+  
+  Menu m1 = sliderBoxes.get(1).menu;
+  Slider r = m1.sliders.get(0);
+  Slider g = m1.sliders.get(1);
+  Slider b = m1.sliders.get(2);
+  bgcol = color(r.value,g.value,b.value);
+  
   displayButtons();
-  menuFunctions();
+  mainFunctions();
+  
+  radioMenus();
   sliderBoxFunctions();
   sliderFunctions();
+  toggleMenus();
+  
   for(Menu menu : BMS.menus)menu.click();
-  //menus.get(0).self_toggle(1);
-  //menus.get(0).toggle2(0,sliderBoxes.get(1),"visible");
+  menus.get(0).self_toggle(1);
+  menus.get(0).toggle2(2,fmenu,"toggle");
+  menus.get(0).toggle2(0,sliderBoxes.get(1),"visible");
+  dock.logic();
+  dock.drawItems();
+  menuFunctions();
+};
+void toggleMenus(){
+  for(int i=0;i<toggleMenus.size();i++){
+    
+    toggleMenu r = toggleMenus.get(i);
+    r.draw();
+    
+  }
+};
+
+void radioMenus(){
+  for(int i=0;i<radioMenus.size();i++){
+    
+    radioMenu r = radioMenus.get(i);
+    r.draw();
+    
+  }
+};
+
+void selfToggle(int i){
+  if(i<=buttons.size())
+  buttons.get(i).self_toggle();
 };
 
 void displayButtons(){
@@ -182,10 +225,9 @@ void displayButtons(){
   };
 };
 
-
-
 void mainFunctions(){
-  main.render();
+  
+  fmenu.displayGrid();
 };
 
 

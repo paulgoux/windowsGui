@@ -200,6 +200,58 @@ class Menu {
     twidth = bwidth*items.size();
     w = bwidth;
   };
+  
+  Menu(float xx, float yy, float ww, String []list,boolean b1) {
+    x = xx;
+    y = yy;
+    w = ww;
+    spacing = 5;
+    
+    h = list.length*20;
+    xoff = 0;
+    yoff = 0;
+    toggle =0;
+    bcol = col;
+    bsize = tsize;
+    //slide = true;
+
+    float bwidth = 0;
+    float maxW = 0;
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      if (textWidth(l)+20>bwidth)bwidth = textWidth(l)+20;
+      //if(
+    }
+    
+    if(b1==true)
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      Button a = new Button( x+bwidth, y + (30)*(i+1), ww, 20, l);
+      a.rx = bwidth;
+      a.border = false;
+      a.parent = this;
+      a.radio = true;
+      items.add(a);
+    }
+    else 
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      Button a = new Button( x+bwidth, y + (30)*(i+1), ww, 20, l);
+      a.rx = bwidth;
+      a.border = false;
+      a.parent = this;
+      a.togglebar = true;
+      items.add(a);
+      //println("button",a);
+    }
+
+    //twidth = bwidth*items.size();
+    w = bwidth+w;
+    twidth = w;
+  };
 
   Menu(float xx, float yy, float ww, String [] list, float k) {
 
@@ -685,7 +737,9 @@ class Menu {
           a.x = x + a.w + spacing * i;
         }else{
           a.y = y + (a.h + spacing) * i; 
+          if(a.pie)a.y = a.h/2+y + (a.h + spacing+20) * i; 
           a.x = x;
+          if(a.pie)a.x = x+a.w/2; 
         }
         if(!parentCanvas){
         if ((a.pos()||a.btnpos())&&!smdown) {
@@ -793,22 +847,22 @@ class Menu {
     if(mouse!=null) mousePos = mouse;
     //if(index>-1&&subindex==-1&&!pos()&&mousePressed)index = -1;
     if (mWindow!=null)y = sliders.get(0).valuey;
-    //if (highlightable) {
-    //  if(!localTheme){
-    //    if (pos(mousePos)) col = BMS.hcol;
-    //    else col = BMS.fcol;
-    //  }else{
-    //    if (pos(mousePos)) col = hcol;
-    //    else col = fcol;
-    //  }
-    //}
-    //if(!localTheme){
-    //  if (toggle==1)col = BMS.toggleCol;
-    //  else col = BMS.fcol;
-    //}else{
-    //  if (toggle==1)col = toggleCol;
-    //  else col = fcol;
-    //}
+    if (highlightable) {
+      if(!localTheme){
+        if (pos(mousePos)) col = BMS.hcol;
+        else col = BMS.fcol;
+      }else{
+        if (pos(mousePos)) col = hcol;
+        else col = fcol;
+      }
+    }
+    if(!localTheme){
+      if (toggle==1)col = BMS.toggleCol;
+      else col = BMS.fcol;
+    }else{
+      if (toggle==1)col = toggleCol;
+      else col = fcol;
+    }
     
     if ((pos()||toggle==1)) open_menu = true;
     else open_menu = false;
@@ -1157,7 +1211,7 @@ class Menu {
         toggle++;
         BMS.menuObject = this;
         m3down = true;
-        println("l1");
+        //println("l1");
       }
       if (!m3down&&pos() && mousePressed&&BMS.menuObject==this&&toggle==1) {
         m3down = true;
@@ -1165,13 +1219,13 @@ class Menu {
         BMS.menuObject.toggle = 0;
         BMS.menuObject.index = -1;
         BMS.menuObject=null;
-        println("l2");
+        //println("l2");
       }
       if(mousePressed&&k){
         m3down = true;
       }
       
-      if (!pos() && mousePressed&&!k&&!m4down&&!subMenuPos) {
+      if (!pos() && mousePressed&&!k&&!m4down&&!subMenuPos&&!m3down) {
         m3down = true;
         toggle = 0;
         if(BMS.menuObject!=null){
@@ -1179,7 +1233,7 @@ class Menu {
         BMS.menuObject.index = -1;
         BMS.menuObject=null;
       }
-        println("l3");
+        //println("l3");
       }
       //if(!m3down&&index==-1&&mousePressed&&BMS.menuObject==this){
       //    m3down = true;
@@ -1554,16 +1608,20 @@ class Menu {
   void highlight(){
     
     if(!pos()){
-      col = BMS.hcol;
-      if(localTheme)col = fcol;
-    }
-    else{
       col = BMS.fcol;
       if(localTheme)col = fcol;
     }
-    if(toggle==1||pos()){
+    else{
+      col = BMS.hcol;
+      if(localTheme)col = fcol;
+    }
+    if(toggle==1){
       col = BMS.toggleCol;
       if(localTheme)col = toggleCol;
+    }
+    if(toggle==1&&pos()){
+      col = color(BMS.fcol,100);
+      if(localTheme)col = color(fcol,100);
     }
   };
   
@@ -1576,5 +1634,21 @@ class Menu {
     //  col = BMS.fcol;
     //  if(localTheme)col = fcol;
     //}
+    if(!pos(mouse)){
+      col = BMS.fcol;
+      if(localTheme)col = fcol;
+    }
+    else{
+      col = BMS.hcol;
+      if(localTheme)col = fcol;
+    }
+    if(toggle==1){
+      col = BMS.toggleCol;
+      if(localTheme)col = toggleCol;
+    }
+    if(toggle==1&&pos(mouse)){
+      col = color(BMS.fcol,100);
+      if(localTheme)col = color(fcol,100);
+    }
   };
 };

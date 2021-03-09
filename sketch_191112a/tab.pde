@@ -5,7 +5,7 @@ class tab extends tabBoundary {
   int tabindex = -1, state, current,id,Width,Height;
   String label,itemLabel;
   boolean border,open,parentCanvas,overflow,docking,docked,dmdown;
-  public boolean localTheme;
+  public boolean localTheme,resizable;
   PVector mouse,mouse2;
   Dock parentDock; 
   
@@ -937,7 +937,7 @@ void setCanvas(tab t){
       Window w = windows.get(i);
       //w.toggle = true;
       
-      w.display_grid();
+      w.displayGrid();
     }
   };
 
@@ -968,6 +968,11 @@ void setCanvas(tab t){
     for (int i=0; i<dmenus.size(); i++) {
       Dropdown d = dmenus.get(i);
       d.setRadius(a);
+    }
+    
+    for (int i=0; i<sliderBoxes.size(); i++) {
+      sliderBox s = sliderBoxes.get(i);
+      s.menu.setRadius(a);
     }
   };
   

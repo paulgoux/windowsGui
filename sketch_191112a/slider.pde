@@ -1,15 +1,15 @@
 class Slider{
   
   int id = -1,type,functionId;
-  float x,y,w,h,valuex,valuey,btnw,btnh, value = 0,toffx,toffy,spacing = 20,tsize = 12,ssize,temp,startvalue,endvalue,start,end,r1,r2,r3,r4;
+  float x,y,w,h,valuex,valuey,btnw,btnh, value = 0,toffx,toffy,spacing = 20,tsize = 12,ssize,temp,startvalue,endvalue,start,end,r1,r2,r3,r4,radius,pieVal;
   String label,parentVar,parentBool,itemLabel;
   boolean drag,resize,border,fill = true ,toggle,visible = true,horizontal = true,vertical,matrix,classic,pie,radio,square,bar,mdown,mup,Label,right,up,down,left,tvisible = true,update = true,
-          tdown,parentCanvas;
+          tdown,parentCanvas,mdown1;
   public boolean localTheme;
   color col = color(0);
   color col2 = color(255);
   color col3 = color(255,100);
-  color barcol = color(0, 255, 73),col4 = color(0,50),tcol = color(255),slidercol = color(255),hovercol = color(0,50),toggleCol = color(50,0),sliderbgcol = color(255);
+  color barcol = color(0, 255, 73),col4 = color(0,50),tcol = color(255),slidercol = color(255),hovercol = BMS.hcol,toggleCol = color(50,0),sliderbgcol = color(255);
   String control = "";
   Object Link,parentObject;
   Menu parent;
@@ -228,7 +228,7 @@ class Slider{
   void draw(PGraphics canvas){
     functions(canvas);
     //if(mouse==null)mouse = new PVector(mouseX,mouseY);
-    //classic_Bar(canvas);
+    //classicBar(canvas);
     //canvas.fill(0,255,0);
     //if (parentTab!=null)mouse = new PVector(mouseX-parentTab.x,mouseY-parentTab.y);
     //else println("no tab");
@@ -415,17 +415,17 @@ class Slider{
      noStroke(); 
     }
     if(classic){
-      if(square)classic_Square();
-      else if(radio)classic_Radio();
-      else if(bar)classic_Bar();
+      if(square)classicSquare();
+      else if(radio)classicRadio();
+      else if(bar)classicBar();
     }else if(matrix){
       if(square)Matrix();
       else if(radio){}
       else if(bar){}
     }else if(pie){
-      if(square)pie_Square();
-      else if(radio)pie_Radio();
-      else if(bar)pie_Bar();
+      if(square)pieSquare();
+      else if(radio)pieRadio();
+      else if(bar)pieBar();
     }
   };
   
@@ -436,30 +436,30 @@ class Slider{
      canvas.noStroke(); 
     }
     if(classic){
-      if(square)classic_Square();
-      else if(radio)classic_Radio();
-      else if(bar)classic_Bar(canvas);
+      if(square)classicSquare(canvas);
+      else if(radio)classicRadio(canvas);
+      else if(bar)classicBar(canvas);
     }else if(matrix){
       if(square)Matrix();
       else if(radio){}
       else if(bar){}
     }else if(pie){
-      if(square)pie_Square();
-      else if(radio)pie_Radio();
-      else if(bar)pie_Bar();
+      if(square)pieSquare();
+      else if(radio)pieRadio();
+      else if(bar)pieBar();
     }}
   };
   
- void classic_Square(){
+ void classicSquare(){
     //----------slider bg-----------
     fill(slidercol);
-    if(vertical)rect(x,y,w,h);
-    else rect(x,y,w,h);
+    if(vertical)rect(x,y,w,h,r1,r2,r3,r4);
+    else rect(x,y,w,h,r1,r2,r3,r4);
     
-    if(pos())fill(hovercol);if(!fill)noFill();
+    if(pos())fill(BMS.hcol);if(!fill)noFill();
     
-    if(vertical)rect(x,y,w,h);
-    else rect(x,y,w,h);
+    if(vertical)rect(x,y,w,h,r1,r2,r3,r4);
+    else rect(x,y,w,h,r1,r2,r3,r4);
     
     textSize(tsize);
     strokeWeight(ssize);
@@ -475,17 +475,20 @@ class Slider{
       }
       if(!vertical)btnh = h;
       noStroke();
+      
+      fill(barcol);
+      
+      if(vertical)rect(x,y+valuex,btnw-2,btnw-2,r1,r2,r3,r4);
+      else  rect(x + valuex,y,btnw,btnh,r1,r2,r3,r4);
       fill(255);
       
       //slider value-------------------
       rectMode(CORNER);
-      if(vertical)rect(x,y+valuex,btnw-2,btnw-2);
-      else rect(x+valuex,y,btnw,btnh);
+      fill(BMS.col);
+      if(vertical)rect(x,y+valuex,btnw-2,btnw-2,r1,r2,r3,r4);
+      else rect(x+valuex,y,btnw,btnh,r1,r2,r3,r4);
       
-      fill(barcol);
       
-      if(vertical)rect(x,y+valuex,btnw-2,btnw-2);
-      else  rect(x + valuex,y,btnw,btnh);
       
       fill(tcol);
       if(vertical){
@@ -500,16 +503,68 @@ class Slider{
       
   };
   
-  void classic_Radio(){
+  void classicSquare(PGraphics canvas){
+    //----------slider bg-----------
+    canvas.fill(slidercol);
+    if(vertical)canvas.rect(x,y,w,h,r1,r2,r3,r4);
+    else canvas.rect(x,y,w,h,r1,r2,r3,r4);
+    
+    if(pos(mouse))canvas.fill(BMS.hcol);if(!fill)canvas.noFill();
+    
+    if(vertical)canvas.rect(x,y,w,h,r1,r2,r3,r4);
+    else canvas.rect(x,y,w,h,r1,r2,r3,r4);
+    
+    canvas.textSize(tsize);
+    canvas.strokeWeight(ssize);
+    canvas.stroke(0);
+    if(parent==null){
+    if(btnpos(mouse)||pos(mouse)||mdown)canvas.fill(col4);btnh = h+10;
+    }
+    
+      if(label!=null){
+        canvas.fill(tcol);
+        if(vertical)canvas.text(label,x,y-tsize);
+        else canvas.text(label,x-textWidth(label),y+h);
+      }
+      if(!vertical)btnh = h;
+      canvas.noStroke();
+      
+      canvas.fill(barcol);
+      //canvas.fill(BMS.col);
+      if(pos(mouse))canvas.fill(BMS.hcol);
+      if(vertical)canvas.rect(x,y+valuex,btnw-2,btnw-2,r1,r2,r3,r4);
+      else  canvas.rect(x + valuex,y,btnw,btnh,r1,r2,r3,r4);
+      canvas.fill(255);
+      
+      //slider value-------------------
+      canvas.rectMode(CORNER);
+      canvas.fill(BMS.fcol);
+      if(vertical)canvas.rect(x,y+valuex,btnw-2,btnw-2,r1,r2,r3,r4);
+      else canvas.rect(x+valuex,y,btnw,btnh,r1,r2,r3,r4);
+      
+      canvas.fill(tcol);
+      if(vertical){
+        canvas.pushMatrix();
+        canvas.translate(x+w+toffx,y+h+toffy);
+        canvas.rotate(PI/2);
+        
+        canvas.translate(-(x+w+toffx),-(y+h+toffy-w));
+        canvas.text(value,x+w+toffx,y+h+toffy);
+        canvas.popMatrix();
+      }else canvas.text(value,x+w+toffx,y+h+toffy);
+      
+  };
+  
+  void classicRadio(){
     //----------slider bg-----------
     fill(slidercol);
-    if(vertical)rect(x,y,w,h);
-    else rect(x,y,w,h);
+    if(vertical)rect(x+w/2-2,y+valuex,4,h-valuex,r1,r2,r3,r4);
+    else rect(x,y+h/2-2,w,4,r1,r2,r3,r4);
     
     if(pos())fill(hovercol);if(!fill)noFill();
     
-    if(vertical)rect(x,y+valuex,w,h-valuex);
-    else rect(x,y,w,h);
+    if(vertical)rect(x+w/2-2,y+valuex,4,h-valuex,r1,r2,r3,r4);
+    else rect(x,y+h/2-2,w,4,r1,r2,r3,r4);
     
     textSize(tsize);
     strokeWeight(ssize);
@@ -551,16 +606,67 @@ class Slider{
       
   };
   
-  void classic_Bar(){
+  void classicRadio(PGraphics canvas){
+    //----------slider bg-----------
+    canvas.fill(slidercol);
+    if(vertical)canvas.rect(x+w/2-2,y+valuex,4,h-valuex,r1,r2,r3,r4);
+    else canvas.rect(x,y+h/2-2,w,4,r1,r2,r3,r4);
+    
+    if(pos())canvas.fill(hovercol);if(!fill)canvas.noFill();
+    
+    if(vertical)canvas.rect(x+w/2-2,y+valuex,4,h-valuex,r1,r2,r3,r4);
+    else canvas.rect(x,y+h/2-2,w,4,r1,r2,r3,r4);
+    
+    canvas.textSize(tsize);
+    canvas.strokeWeight(ssize);
+    canvas.stroke(0);
+    if(parent==null){
+    if(btnpos()||pos()||mdown)canvas.fill(col4);btnh = h+10;
+    }
+    
+      if(label!=null){
+        canvas.fill(tcol);
+        if(vertical)canvas.text(label,x,y-tsize);
+        else canvas.text(label,x-textWidth(label),y+h);
+      }
+      if(!vertical)btnh = h;
+      canvas.noStroke();
+      canvas.fill(255);
+      
+      //slider value-------------------
+      canvas.ellipseMode(CORNER);
+      //text(valuex , 500,500 + 10*id);
+      if(vertical)canvas.ellipse(x,y+valuex,btnw-2,btnw-2);
+      else canvas.ellipse(x+valuex,y,btnw,btnh);
+      
+      canvas.fill(barcol);
+      
+      if(vertical)canvas.ellipse(x,y+valuex,btnw-2,btnw-2);
+      else  canvas.ellipse(x + valuex,y,btnw,btnh);
+      
+      canvas.fill(tcol);
+      if(vertical){
+        canvas.pushMatrix();
+        canvas.translate(x+w+toffx,y+h+toffy);
+        canvas.rotate(PI/2);
+        
+        canvas.translate(-(x+w+toffx),-(y+h+toffy-w));
+        canvas.text(value,x+w+toffx,y+h+toffy);
+        canvas.popMatrix();
+      }else canvas.text(value,x+w+toffx,y+h+toffy);
+      
+  };
+  
+  void classicBar(){
     //----------slider bg-----------
     fill(slidercol);
-    if(vertical)rect(x,y+valuex,w,h-valuex);
-    else rect(x+valuex,y,w-valuex,h);
+    if(vertical)rect(x,y+valuex,w,h-valuex,r1,r2,r3,r4);
+    else rect(x+valuex,y,w-valuex,h,r1,r2,r3,r4);
     
     if(pos())fill(hovercol);if(!fill)noFill();
     
-    if(vertical)rect(x,y+valuex,w,h-valuex);
-    else rect(x + valuex,y,w-valuex,h);
+    if(vertical)rect(x,y+valuex,w,h-valuex,r1,r2,r3,r4);
+    else rect(x + valuex,y,w-valuex,h,r1,r2,r3,r4);
     
     textSize(tsize);
     strokeWeight(ssize);
@@ -570,7 +676,8 @@ class Slider{
     }
     
       if(label!=null){
-        fill(tcol);
+        fill(BMS.tcol);
+        if(localTheme)fill(tcol);
         if(vertical)text(label,x,y-tsize);
         else text(label,x-textWidth(label),y+h);
       }
@@ -579,12 +686,13 @@ class Slider{
       fill(255);
       
       //slider value-------------------
-      if(vertical)rect(x,y,w,valuex);
-      else rect(x,y,valuex,btnh);
+      if(vertical)rect(x,y,w,valuex,r1,r2,r3,r4);
+      else rect(x,y,valuex,btnh,r1,r2,r3,r4);
       fill(barcol);
-      if(vertical)rect(x,y,w,valuex);
-      else rect(x,y,valuex,btnh);
-      fill(tcol);
+      if(vertical)rect(x,y,w,valuex,r1,r2,r3,r4);
+      else rect(x,y,valuex,btnh,r1,r2,r3,r4);
+      fill(BMS.tcol);
+      if(localTheme)fill(tcol);
       if(vertical){
         pushMatrix();
         translate(x+w+toffx,y+h+toffy);
@@ -598,7 +706,7 @@ class Slider{
    
   };
   
-  void classic_Bar(PGraphics canvas){
+  void classicBar(PGraphics canvas){
     canvas.fill(255);
     if(mouse==null){
       if(parentTab!=null)println("cb","parent tab");
@@ -608,13 +716,13 @@ class Slider{
 
     //----------slider bg-----------
     canvas.fill(slidercol);
-    if(vertical)canvas.rect(x,y+valuex,w,h-valuex);
-    else canvas.rect(x+valuex,y,w-valuex,h);
+    if(vertical)canvas.rect(x,y+valuex,w,h-valuex,r1,r2,r3,r4);
+    else canvas.rect(x,y,w,h,r1,r2,r3,r4);
     
     if(pos(mouse))canvas.fill(hovercol);if(!fill)canvas.noFill();
     
-    if(vertical)canvas.rect(x,y+valuex,w,h-valuex);
-    else canvas.rect(x + valuex,y,w-valuex,h);
+    if(vertical)canvas.rect(x,y+valuex,w,h-valuex,0,r2,r3,0);
+    else canvas.rect(x ,y,w,h,r1,r2,r3,r4);
     
     canvas.textSize(tsize);
     canvas.strokeWeight(ssize);
@@ -632,11 +740,11 @@ class Slider{
       canvas.noStroke();
       canvas.fill(255);
       //slider value-------------------
-      if(vertical)canvas.rect(x,y,w,valuex);
-      else canvas.rect(x,y,valuex,btnh);
+      //if(vertical)canvas.rect(x,y,w,valuex,r1,0,r3,r4);
+      //else canvas.rect(x,y,valuex,btnh,r1,0,r3,r4);
       canvas.fill(barcol);
-      if(vertical)canvas.rect(x,y,w,valuex);
-      else canvas.rect(x,y,valuex,btnh);
+      if(vertical)canvas.rect(x,y,w,valuex,r1,r2,r3,r4);
+      else canvas.rect(x,y,valuex,btnh,r1,r2,r3,r4);
       canvas.fill(tcol);
       if(vertical){
         canvas.pushMatrix();
@@ -660,21 +768,40 @@ class Slider{
     
   };
   
-  void pie_Square(){
-    if(!fill){
-      noFill();
-    }
-    fill(slidercol);
-    ellipseMode(CENTER);
-    ellipse(x,y,w,h);
-    arc(x,y,w,h,valuex,valuey);
-    arc(x+10,y+10,w,h,valuex,valuey);
-    fill(col3);
-    //rect(
-    
+  void pieSquare(){
+    float val = 0;
+    float v1 = 5;
+    if(dist(mouseX,mouseY,x,y)<radius&&mousePressed&&!mdown1)mdown1 = true;
+    //if(mdown)val = map(mouseX,0,width,0,2*PI);
+    if(mdown1)pieVal = abs(2*PI-(atan2(x-mouseX,y-mouseY)+PI/2));
+    if(pieVal>2*PI)pieVal -=PI*2;
+    value = pieVal;
+    fill(255);
+    if(dist(mouseX,mouseY,x,y)<radius)
+    fill(BMS.fcol);
+    ellipse( x,y,radius*2-v1,radius*2-v1);
+    fill(255);
+    ellipse( x,y,radius*2-v1,radius*2-v1);
+    fill(BMS.fcol);
+    if(dist(mouseX,mouseY,x,y)<radius)
+    fill(BMS.hcol);
+    arc(x,y, 120, 120, 0, pieVal, PIE);
+    fill(255);
+    ellipse( x,y,75,75);
+    fill(BMS.hcol);
+    if(dist(mouseX,mouseY,x,y)<radius)
+    fill(BMS.fcol);
+    ellipse( x,y,75,75);
+    stroke(255);
+    strokeWeight(5);
+    fill(BMS.tcol);
+    float val1 = map(pieVal,0,2*PI,0,100);
+    fill(0);
+    text(pieVal,x-40,y+h-40);
+    if(!mousePressed)mdown1 = false;
   };
   
-  void pie_Radio(){
+  void pieRadio(){
     if(!fill){
       noFill();
     }
@@ -691,7 +818,7 @@ class Slider{
       ellipse(x,y + valuey,10,btnh);
     }
   };
-  void pie_Bar(){
+  void pieBar(){
     if(!fill){
       noFill();
     }

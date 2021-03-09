@@ -56,11 +56,15 @@ void setup(){
   Dropdown dMenu = new Dropdown(10,115,100,s);
   sliderBox s1 = new sliderBox(50,150,90,10,s,false);
   s1.menu.draggable = false;
+  s1.setSquare();
   tab1.add(menu);
   tab1.add(dMenu);
   tab1.add(s1);
   tab1.setRadius(10);
   tab1.setAlignment("center");
+  BMS.dock.add(tab1);
+  BMS.dock.setRadius(10);
+  //BMS.dock.add(sliders);
   BMS.menus.get(0).setRadius(10);
   BMS.menus.get(0).setAlignment("center");
   

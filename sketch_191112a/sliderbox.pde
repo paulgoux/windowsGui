@@ -54,6 +54,88 @@ class sliderBox{
     
   };
   
+  sliderBox(float xx, float yy,float ww,float H,float S,String [] Labels,int k){
+    
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = (10) * Labels.length;
+    
+    menu = new Menu(x,y,w,h);
+    menu.highlightable = false;
+    menu.visible = false;
+    menu.type = 2;
+    menu.spacing = vspacing;
+    menu.vertical = false;
+    menu.slide = false;
+    menu.draggable = true;
+    menu.show = true;
+    
+    if(k==0){
+      h = (w/2+20+S) * Labels.length;
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y+w/2 + (y+w/2 + S+80) *i;
+        Slider a =  new Slider(x +w/2,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.classic = false;
+        a.pie = true;
+        a.square = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        a.radius = w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==1){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y+w/2 +(y + w/2 + S) *i;
+        Slider a =  new Slider(x +w/2,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.classic = false;
+        a.pie = true;
+        a.radio = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        a.radius = w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==2){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y + 10 *i;
+        Slider a =  new Slider(x ,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.matrix = true;
+        a.bar = true;
+        a.parent = menu;
+        a.valuex = a.w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==3){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y + 10 *i;
+        Slider a =  new Slider(x ,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.matrix = true;
+        a.radio = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    
+    createTooltip();
+    
+    BMS.sliderBoxes.add(this);
+    
+  };
+  
   sliderBox(float xx, float yy,float ww,float S,String [] Labels,boolean bool){
     
     x = xx;
@@ -744,6 +826,67 @@ class sliderBox{
   
   void setbg(){
     
+  };
+  
+  void setBar(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = true;
+      s.radio = false;
+      s.square = false;
+      s.pie = false;
+      s.matrix = false;
+      s.classic = true;
+    };
+  };
+  
+  void setSquare(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = false;
+      s.square = true;
+      s.pie = false;
+      s.matrix = false;
+      s.classic = true;
+      //println(s);
+    };
+  };
+  
+  void setRadio(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = true;
+      s.square = false;
+      s.pie = false;
+      s.matrix = false;
+      s.classic = true;
+    };
+  };
+  
+  void setMatrix(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = false;
+      s.square = false;
+      s.pie = false;
+      s.matrix = true;
+      s.classic = false;
+    };
+  };
+  
+  void setPie(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = false;
+      s.square = false;
+      s.pie = true;
+      s.matrix = false;
+      s.classic = false;
+    };
   };
   
   void setDrag(Boolean a){
