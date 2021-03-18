@@ -1,10 +1,12 @@
 class TextBox {
-
+  BMScontrols Bms;
+  PApplet applet;
   int id, toggle, cols, rows, size, t, timer = 20, blkrate = 30, t1 = blkrate, t2 = blkrate, start, end, hcount, index, lindex, vindex = -1, hindex = -1, windex, vpos = 0, hpos, sltcounter, vcount = 0,delay=10,delay2 = 5,maxCount = 51;
-  float x, y, w, h, textsize = 10, twidth = 0, posx, posy, tposx, tposy, strposx, strposy, tbwidth, strwidth, strwidth2, strheight, cursorx, cursory, crwidth, totalwidth,xoff,
+  float x, y, w, h, bx,by,bw,bh, textsize = 10, twidth = 0, posx, posy, tposx, tposy, strposx, strposy, tbwidth, strwidth, strwidth2, strheight, cursorx, cursory, crwidth, totalwidth,xoff,
         xOffset,yOffset;
   String label, text, label_backup, cboard = "";
-  boolean drag, resize, hover, border, background, hidden, fill = true, init, ready, label_bool, clear, copied, tbox = false, full, tsize,dragtext,mdown,onfocus,showLabel,parentCanvas,firstPress,getChar;
+  boolean drag, resize, hover, border, background, hidden, fill = true, init, ready, label_bool, clear, copied, tbox = false, full, tsize,dragtext,mdown,
+          onfocus,showLabel,parentCanvas,firstPress,getChar,selectAll,ctrl,copyClipboard,clipboardToggle;
   Menu toolBox;
   Button child;
   ArrayList<Letter> textbox = new ArrayList<Letter>();
@@ -19,7 +21,7 @@ class TextBox {
   ArrayList<String> saveValues = new ArrayList<String>();
   Letter b = null;
   PVector mouse;
-  color col = color(255), col2 = color(0);
+  int col = color(255), col2 = color(0);
 
   Window parent;
 
@@ -29,6 +31,10 @@ class TextBox {
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     totalwidth = w;
     size = textbox.size();
@@ -43,6 +49,10 @@ class TextBox {
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
 
     totalwidth = w;
@@ -63,6 +73,11 @@ class TextBox {
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
+    
     cols = Cols;
     totalwidth = w;
     size = textbox.size();
@@ -280,7 +295,7 @@ class TextBox {
   void selectall() {
     fill(0);
     //if(selectAll){fill(0);text("Select all", 100,200);}
-    if (toggle==1&&ctrl==1&&selectAll)text("Select all", 100, 200);
+    if (toggle==1&&ctrl&&selectAll)text("Select all", 100, 200);
     
   };
   
@@ -355,7 +370,7 @@ class TextBox {
 
   void error() {
     //boolean tsize = true;
-    if (clipBoard.length()>0&&textWidth(clipBoard)+textWidth(textBox)*textsize/12>totalwidth&&copy_clipboard&&clipboard_toggle==1)tsize = true;
+    if (Bms.clipBoard.length()>0&&textWidth(Bms.clipBoard)+textWidth(textBox)*textsize/12>totalwidth&&copyClipboard&&clipboardToggle)tsize = true;
 
     if (toggle==1) {
       if (tsize) {
@@ -374,7 +389,7 @@ class TextBox {
   
   void error(PGraphics canvas) {
     //boolean tsize = true;
-    if (clipBoard.length()>0&&textWidth(clipBoard)+textWidth(textBox)*textsize/12>totalwidth&&copy_clipboard&&clipboard_toggle==1)tsize = true;
+    if (Bms!=null&&Bms.clipBoard!=null&&Bms.clipBoard.length()>0&&textWidth(Bms.clipBoard)+textWidth(textBox)*textsize/12>totalwidth&&copyClipboard&&clipboardToggle)tsize = true;
 
     if (toggle==1) {
       if (tsize) {
@@ -407,12 +422,15 @@ class TextBox {
     if(textbox.size()>0&&hindex!=-1)current = textbox.get(hindex);
     if(textbox.size()>0&&hindex==-1)current = textbox.get(textbox.size()-1);
     
-    if(clipboard_toggle==0)cboard = "";
+    if(!clipboardToggle)cboard = "";
     
-    if(cboard != clipBoard&&copy_clipboard){ clipboard = clipBoard;cboard = clipBoard;}
+    if(cboard != Bms.clipBoard&&copyClipboard){ 
+      clipboard = Bms.clipBoard;
+      cboard = Bms.clipBoard;
+    }
     else{ clipboard = null;}
     float delay = delay2;
-    if(!copy_clipboard&&clipboard_toggle==0){
+    if(!copyClipboard&&!clipboardToggle){
       
         timer --;
         Letter l = null;
@@ -461,7 +479,7 @@ class TextBox {
         else if(keyPressed && key==BACKSPACE&&getChar){delete();}
         //setDelay = true;
     }
-    else if(copy_clipboard&&clipboard_toggle==1&&!tsize){
+    else if(copyClipboard&&clipboardToggle&&!tsize){
       
             if(hindex>-1){
             if(hindex<textBox.length())tm = textBox.substring ( 0, hindex + 1  );
@@ -477,8 +495,8 @@ class TextBox {
                 String b = str(cboard.charAt(i));
                 textBox += b;
               }}
-              clipboard_toggle = 0;
-              copy_clipboard = false;
+              clipboardToggle = false;
+              copyClipboard = false;
               }}
   };
   
@@ -494,11 +512,11 @@ class TextBox {
       if (textbox.size()>0&&hindex!=-1)current = textbox.get(hindex);
       if (textbox.size()>0&&hindex==-1)current = textbox.get(textbox.size()-1);
 
-      if (clipboard_toggle==0)cboard = "";
+      if (!clipboardToggle)cboard = "";
 
-      if (cboard != clipBoard&&copy_clipboard) { 
-        clipboard = clipBoard;
-        cboard = clipBoard;
+      if (cboard != Bms.clipBoard&&copyClipboard) { 
+        clipboard = Bms.clipBoard;
+        cboard = Bms.clipBoard;
       } else clipboard = null;
       
       String a = getChar();
@@ -507,7 +525,7 @@ class TextBox {
       tm0 = new ArrayList<Letter>();
       tm1 = new ArrayList<Letter>();
 
-      if (!copy_clipboard&&clipboard_toggle==0) {
+      if (!copyClipboard&&!clipboardToggle) {
 
         timer --;
         Letter l = null;
@@ -553,7 +571,7 @@ class TextBox {
         } else if (keyPressed && keyCode==ENTER&&getChar) {
           value = float(textBox);
         }
-      } else if (copy_clipboard&&clipboard_toggle==1&&getChar) {
+      } else if (copyClipboard&&clipboardToggle&&getChar) {
         if (!tsize) {
           if (timer<=0) {
             timer = 21;

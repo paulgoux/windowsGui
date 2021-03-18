@@ -1,12 +1,14 @@
 class textBlock{
+    BMScontrols Bms;
+    PApplet applet;
     boolean parentCanvas;
     public boolean vertical,horizontal ;
-    public float x,y,w,h,offsetX,offsetY;
+    public float x,y,w,h,bx,by,bw,bh,offsetX,offsetY;
     public float tSize = 12;
 
     String [] text;
     String line;
-    color col = color(0);
+    int col = color(0);
 
     textBlock(float x,float y,float w,float h){
 
@@ -14,6 +16,11 @@ class textBlock{
         this.y = y;
         this.w = w;
         this.h = h;
+        
+        bx = x;
+        by = y;
+        bw = w;
+        bh = h;
 
     };
 
@@ -23,6 +30,11 @@ class textBlock{
         this.y = y;
         this.w = w;
         this.h = h;
+        
+        bx = x;
+        by = y;
+        bw = w;
+        bh = h;
         text = s;
     };
 
@@ -32,6 +44,11 @@ class textBlock{
         this.y = y;
         this.w = w;
         this.h = h;
+        
+        bx = x;
+        by = y;
+        bw = w;
+        bh = h;
         line = s;
     };
 

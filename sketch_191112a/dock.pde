@@ -1,6 +1,6 @@
 class Dock{
-
-    float x,y,w,h,currentWidth,currentHeight,r1,r2,r3,r4;
+    PApplet applet;
+    float x,y,w,h,bx,by,bw,bh,currentWidth,currentHeight,r1,r2,r3,r4;
     ArrayList<String> names = new ArrayList<String>();
     ArrayList<Button> buttons = new ArrayList<Button>();
     ArrayList<PGraphics> canvases = new ArrayList<PGraphics>();
@@ -15,6 +15,10 @@ class Dock{
         this.y = y;
         this.w = w;
         this.h = h;
+        bx = x;
+        by = y;
+        bw = w;
+        bh = h;
     };
 
     Dock(float x,float y,float w,float h,Object parent){
@@ -22,6 +26,10 @@ class Dock{
         this.y = y;
         this.w = w;
         this.h = h;
+        bx = x;
+        by = y;
+        bw = w;
+        bh = h;
         this.parent = parent; 
     };
 
@@ -151,7 +159,9 @@ class Dock{
     };
 
     boolean pos(PVector mouse){
-        return mouse.x>x&&mouse.x<x+w&&mouse.y>y&&mouse.y<y+h;
+      
+      return mouse.x>x&&mouse.x<x+w&&mouse.y>y&&mouse.y<y+h;
+        
     };
     
     void setRadius(float a){

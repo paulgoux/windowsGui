@@ -1,5 +1,6 @@
 class Button{
-  
+  BMScontrols Bms;
+  PApplet applet;        
   public float x,y,bx = x,by = y,w,h,size,textsize = 12,xoff,yoff,bsize,tsize = 12,tyoff,txoff,tmax = 2;
   int id,toggle,toggle2,type;
   float scalew,scaleh,r1,r2,r3,r4,rx,ry;
@@ -9,7 +10,7 @@ class Button{
   boolean drag,resize, radio,update,border = true,vertical,horizontal,gif,Img,value,textright,textbtm,textleft,textup,texttoggle,animate = true,toggleb,mdown,sdown,visible = true
           ,up,right,down,togglebar,togglebox,mdown2,textcheck,parentCanvas,subLeft,click,mclick,m2down,toggle_;
   public boolean localTheme;
-  color fcol = BMS.fcol,bcol = color(0,100),hcol = color(255,50),col = fcol,tcol = color(255),col1 = fcol,toggleCol = color(50,0);
+  int fcol = BMS.fcol,bcol = color(0,100),hcol = color(255,50),col = fcol,tcol = color(255),col1 = fcol,toggleCol = color(50,0);
   Menu parent;
   Menu submenu;
   Window subwindow;
@@ -523,37 +524,57 @@ class Button{
     }}
     
     if(togglebar){
-      canvas.fill(255);
-      if(localTheme)
-      canvas.fill(255);
-      canvas.stroke(col);
+      highlight(mouse);
+      canvas.fill(0);
+      canvas.stroke(BMS.col);
       if(!border)canvas.noStroke();
-      if(mousePressed)println("w,h",w,h);
       if(w>h){
       canvas.fill(255);
-      if(localTheme)
-      canvas.fill(fcol);
-      canvas.rect(x ,y,w,h,r1,r2,r3,r4);
+      canvas.rect(x + rx,y,w,h,r1,r2,r3,r4);
+      canvas.fill(255);
+      if(pos())
+      canvas.fill(BMS.hcol);
+      canvas.rect(x + rx,y,w,h,r1,r2,r3,r4);
       if(label!=null){
         canvas.fill(BMS.tcol);
+        if(localTheme);
+        canvas.fill(tcol);
         canvas.textSize(tsize);
         if(up)canvas.text(label,x,y-3);
         if(right)canvas.text(label,x+w+2,y);
         if(down)canvas.text(label,x,y+tsize*2+2);
-        else text(label,x - textWidth(label) - 4 + txoff,y+tsize + tyoff + 4);
+        else canvas.text(label,x + 5 + txoff,y+tsize + tyoff + 4);
         canvas.textSize(12);
       }
-      canvas.fill(col);
+      canvas.fill(fcol);
       if(localTheme)
-      canvas.fill(bcol);
-      if(toggle==0){canvas.rect(x + w/2,y,w/2,h,r1,r2,r3,r4);canvas.text("OFF",x+w+2+txoff,y+tsize+tyoff+4);}
-      else{ canvas.rect(x,y,w/2,h,r1,r2,r3,r4);canvas.text("ON",x+w+2+txoff,y+tsize+tyoff+4);}
+      canvas.fill(fcol);
+      if(toggle==0){
+        canvas.rect(x + rx,y,w/2,h,r1,r2,r3,r4);
+        canvas.fill(BMS.tcol);
+        if(localTheme)
+        canvas.fill(tcol);
+        canvas.text("OFF",x+rx+w+10+txoff,y+tsize+tyoff+4);
+      }
+      else{
+        canvas.fill(fcol);
+        if(localTheme)
+        canvas.fill(fcol);
+        canvas.rect(x+rx+w/2,y,w/2,h,r1,r2,r3,r4);
+        canvas.fill(BMS.tcol);
+        if(localTheme)
+        canvas.fill(tcol);
+        canvas.text("ON",x+rx+w+10+txoff,y+tsize+tyoff+4);
+      }
     }
     else{
+      canvas.fill(255);
+      canvas.rect(x + rx,y,w,h,r1,r2,r3,r4);
       canvas.fill(col);
       if(localTheme)
       canvas.fill(fcol);
-      canvas.rect(x,y,w,h,r1,r2,r3,r4);
+      canvas.rect(x+rx,y,w,h,r1,r2,r3,r4);
+      
       if(label!=null){
         canvas.fill(BMS.tcol);
         if(localTheme)
@@ -562,16 +583,10 @@ class Button{
         if(up)canvas.text(label,x,y-3);
         if(right)canvas.text(label,x+w+2,y);
         if(down)canvas.text(label,x,y+tsize*2+2);
-        else text(label,x - textWidth(label) - 4 +txoff,y+w/2+tsize/2+tyoff);
+        else canvas.text(label,x + 5 +txoff,y+w/2+tsize/2+tyoff);
         canvas.textSize(12);
-      }
-      canvas.fill(col);
-      if(localTheme)
-      canvas.fill(fcol);
-      if(toggle==0){canvas.rect(x+h/2,y,w,h/2,r1,r2,r3,r4);canvas.text("OFF",x+txoff,y+h+2+tyoff+4);}
-      else{ canvas.rect(x,y,w,h/2,r1,r2,r3,r4);canvas.text("ON",x+txoff,y+h+2+tyoff+4);}
-    }}
-    else if(togglebox){
+      }}
+    }else if(togglebox){
       canvas.fill(BMS.toggleCol);
       if(localTheme)
       canvas.fill(0);
@@ -663,10 +678,12 @@ class Button{
   };
   
   boolean pos(PVector m){
-    boolean k = false;
-    if(m==null&&label!=null)println(label);
-    else if(x  < m.x && m.x < x + w && y < m.y && m.y < y + h+2)k = true;
-    return x  < m.x && m.x < x + w && y < m.y && m.y < y + h+2;
+    if(radio||togglebar){
+      return rx  < m.x && m.x < rx + w && y < m.y && m.y < y + h+2;
+    }else{
+      return x  < m.x && m.x < x + w && y < m.y && m.y < y + h+2;
+    }
+    
   };
   boolean pos(PGraphics m){
     
@@ -711,15 +728,33 @@ class Button{
   public void self_toggle(){
     
       if(parent==null){
-        if(mousePressed&&!mdown){
+        if(pos()&&mousePressed&&!mdown){
         mdown = true;
-        if(pos()){
         toggle++;
-      }
       if(toggle==2){
        toggle=0; 
       }}}else{
       if(pos()&&parent.toggle==1&&mousePressed&&!mdown){
+        mdown = true;
+        toggle++;
+      }
+      if(toggle==2){
+       toggle=0; 
+      }}
+    
+    if(!mousePressed)mdown = false;
+  };
+  
+  public void self_toggle(PVector m){
+    
+      if(parent==null){
+        if(pos(m)&&mousePressed&&!mdown){
+        mdown = true;
+        toggle++;
+      if(toggle==2){
+       toggle=0; 
+      }}}else{
+      if(pos(m)&&parent.toggle==1&&mousePressed&&!mdown){
         mdown = true;
         toggle++;
       }

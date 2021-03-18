@@ -1,5 +1,5 @@
 class Dropdown extends Menu {
-
+  PApplet applet;
   Slider slider;
   float windowx,bwindowx,hiddenw,r1,r2,r3,r4,txoff,tyoff;
   int dcount,windowSize = 5;
@@ -660,6 +660,21 @@ class Dropdown extends Menu {
       b.r2 = a;
       b.r3 = a;
       b.r4 = a;
+    }
+    
+  };
+  
+  void setRadius(float a,float b,float c,float d){
+    r1 = a;
+    r2 = b;
+    r3 = c;
+    r4 = d;
+    for(int i=0;i<items.size();i++){
+      Button k = items.get(i);
+      k.r1 = a;
+      k.r2 = d;
+      k.r3 = c;
+      k.r4 = d;
     }
     
   };

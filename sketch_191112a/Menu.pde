@@ -1,5 +1,6 @@
 class Menu {
-
+  PApplet applet;
+  BMScontrols Bms;
   int id, item, t, toggle, toggle2, type = 0, index =-1, subindex = -1, t2, sindex=-1, counter, slcount,nindex = -1;
   public float x, y, bx = x, by = y, w, h, xoff, yoff, window = 0, htotal, Yoff, xpos, ypos, tsize = 12, bsize, spacing, twidth,r1,r2,r3,r4;
   PVector mouse,mousePos =new PVector(0,0);
@@ -24,7 +25,7 @@ class Menu {
 
   Menu link;
   //color col = color(0,150), bcol, tcol = color(255), fcol = color(255, 80), hcol = color(255, 50),toggleCol = color(50,0);
-  color col = color(0, 255, 73), bcol = color(0, 255, 73), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73),toggleCol = color(55, 84, 63);
+  int col = color(0, 255, 73), bcol = color(0, 255, 73), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73),toggleCol = color(55, 84, 63);
 
   public Menu() {
   };
@@ -247,7 +248,111 @@ class Menu {
       items.add(a);
       //println("button",a);
     }
+    
+    //twidth = bwidth*items.size();
+    w = bwidth+w;
+    twidth = w;
+  };
+  
+  Menu(float xx, float yy, float ww,float H, String []list,boolean b1) {
+    x = xx;
+    y = yy;
+    w = ww;
+    spacing = 5;
+    
+    h = list.length*H;
+    xoff = 0;
+    yoff = 0;
+    toggle =0;
+    bcol = col;
+    bsize = tsize;
+    //slide = true;
 
+    float bwidth = 0;
+    float maxW = 0;
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      if (textWidth(l)+20>bwidth)bwidth = textWidth(l)+20;
+      //if(
+    }
+    
+    if(b1==true)
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      Button a = new Button( x+bwidth, y + (H+5)*(i+1), ww, H, l);
+      a.rx = bwidth;
+      a.border = false;
+      a.parent = this;
+      a.radio = true;
+      items.add(a);
+    }
+    else 
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      Button a = new Button( x+bwidth, y + (H+5)*(i+1), ww, H, l);
+      a.rx = bwidth;
+      a.border = false;
+      a.parent = this;
+      a.togglebar = true;
+      items.add(a);
+      //println("button",a);
+    }
+    
+    //twidth = bwidth*items.size();
+    w = bwidth+w;
+    twidth = w;
+  };
+  
+  Menu(float xx, float yy, float ww,float H,float s, String []list,boolean b1) {
+    x = xx;
+    y = yy;
+    w = ww;
+    spacing = s;
+    
+    h = list.length*(H+s);
+    xoff = 0;
+    yoff = 0;
+    toggle =0;
+    bcol = col;
+    bsize = tsize;
+    //slide = true;
+
+    float bwidth = 0;
+    float maxW = 0;
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      if (textWidth(l)+20>bwidth)bwidth = textWidth(l)+20;
+      //if(
+    }
+    
+    if(b1==true)
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      Button a = new Button( x+bwidth, y + (H+s)*(i+1), ww, H, l);
+      a.rx = bwidth;
+      a.border = false;
+      a.parent = this;
+      a.radio = true;
+      items.add(a);
+    }
+    else 
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      Button a = new Button( x+bwidth, y + (H+s)*(i+1), ww, H, l);
+      a.rx = bwidth;
+      a.border = false;
+      a.parent = this;
+      a.togglebar = true;
+      items.add(a);
+      //println("button",a);
+    }
+    
     //twidth = bwidth*items.size();
     w = bwidth+w;
     twidth = w;
@@ -279,6 +384,42 @@ class Menu {
     for (int i =0; i<list.length; i++) {
       String l = list[i];
       Button a = new Button( x, y + (20+k) *(i+1), bwidth, 20, l);
+      a.border = false;
+      a.parent = this;
+      a.togglebox = true;
+      items.add(a);
+    }
+
+    twidth = bwidth*items.size();
+    w = bwidth;
+  };
+  
+  Menu(float xx, float yy, float ww, String [] list, float k,float h) {
+
+    x = xx;
+    y = yy;
+    bx = x;
+    by = y;
+    w = ww;
+    h = list.length*(h+k) - k;
+    xoff = 0;
+    yoff = 0;
+    toggle =0;
+    bcol = col;
+    bsize = tsize;
+    spacing = k;
+
+    float bwidth = 0;
+
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+
+      if (textWidth(l)+20>bwidth)bwidth = textWidth(l)+20;
+    }
+
+    for (int i =0; i<list.length; i++) {
+      String l = list[i];
+      Button a = new Button( x, y + (h+k) *(i+1+k), bwidth, 20, l);
       a.border = false;
       a.parent = this;
       a.togglebox = true;
@@ -410,8 +551,9 @@ class Menu {
   };
   
   void draw(PGraphics canvas) {
-    logic(mouse);
-    if(show)trace(canvas);
+    if(mouse!=null)logic(mouse);
+    //if(show)
+    trace(canvas);
     
   };
 
@@ -426,7 +568,7 @@ class Menu {
     drawButtons();
     //if(pos()&&toggle==1)println(label);
     drawDmenu();
-    drawSliders();
+    drawsliders();
   };
 
   void trace(PGraphics canvas) {
@@ -436,7 +578,7 @@ class Menu {
     getState(canvas);
     drawButtons(canvas);
     //drawDmenu();
-    drawSliders();
+    drawsliders();
   };
 
   void getState() {
@@ -577,9 +719,6 @@ class Menu {
               a.draw(localCanvas);
             }}
             a.highlight();
-            if (a.pos(mousePos)&&!parentCanvas)leftdown = true;
-            if (parentCanvas&&a.pos(mousePos))leftdown = true;
-            else leftdown = false;
           }
         } else {
           if (x + window >= a.x) {
@@ -591,9 +730,6 @@ class Menu {
             }
             }
             a.highlight();
-            if (a.pos(mousePos)&&!parentCanvas)leftdown = true;
-            if (parentCanvas&&a.pos(mousePos))leftdown = true;
-            else leftdown = false;
           }}}}
     
   };
@@ -668,15 +804,13 @@ class Menu {
           if (y + window >= a.y) {
             if (a.visible)a.draw(canvas);
             a.highlight(mouse);
-            if (a.pos(mouse))leftdown = true;
-            else leftdown = false;
+            
           }
         } else {
           if (x + window >= a.x) {
             if (a.visible)a.draw(canvas);
             a.highlight(mouse);
-            if (a.pos(mouse))leftdown = true;
-            else leftdown = false;
+            
           }}}}
     
   };
@@ -689,7 +823,8 @@ class Menu {
   };
   
   void add(Slider s,float spacing){
-    
+    s.Bms = Bms;
+    s.applet = this.applet;
     sliders.add(s);
     
     if(items.size()==0)h = (s.h+spacing)*sliders.size();
@@ -697,7 +832,8 @@ class Menu {
   };
   
   void add(Slider s){
-    
+    s.Bms = Bms;
+    s.applet = this.applet;
     sliders.add(s);
     
     if(items.size()==0)h = (s.h+spacing)*sliders.size();
@@ -705,14 +841,15 @@ class Menu {
   };
   
   void add(Button b){
-    
+    b.Bms = Bms;
+    b.applet = this.applet;
     items.add(b);
     
     if(sliders.size()==0)h = (b.h+spacing)*items.size();
     else h = (sliders.get(0).h+spacing)*sliders.size()+(b.h+spacing)*items.size();
   };
 
-  void drawSliders() {
+  void drawsliders() {
     float speed = 2;
     
     if (sliders.size()>0&&show) {
@@ -758,17 +895,17 @@ class Menu {
         }
         if (!slide) {
           if (toggle==1) {
-            if (vertical)window = y + spacing * (sliders.size());
-            else window = x + spacing * (sliders.size());
+            if (vertical)window = y + (spacing +a.h)*(sliders.size());
+            else window = x + (spacing +a.w)*(sliders.size());
           }} else {
           if (toggle==1) {
             window += speed;
             if (vertical) {
-              if (window>y + 20 * sliders.size()) {
-                window = y + 20 * sliders.size();
+              if (window>y + a.h * sliders.size()) {
+                window = y + a.h * sliders.size();
               }} else {
-              if (window>x + 20 * sliders.size()) {
-                window = x + 20 * sliders.size();
+              if (window>x + a.w * sliders.size()) {
+                window = x + a.w * sliders.size();
               }}} else {
             window -= speed;
             if (window<=0) window = 0;
@@ -987,7 +1124,6 @@ class Menu {
     if ((pos(m)||toggle==1)) open_menu = true;
     else open_menu = false;
     if (draggable&&dpos(m)&&mousePressed&&!drag&&!mdown) {
-      open_menus = true;
       mdown = true;
       drag = true;
       dx = m.x - x;
@@ -1336,6 +1472,13 @@ class Menu {
   void self_toggle(int i) {
     Button k = items.get(i);
     if (k.parent.toggle==1)k.self_toggle();
+    //else if(
+  };
+  
+  void self_toggle(int i,PVector m) {
+    Button k = items.get(i);
+    if (k.parent.toggle==1)k.self_toggle(m);
+    //else if(
   };
 
   void sptoggle(int n, Object a, String b, String [] c) {
@@ -1357,7 +1500,7 @@ class Menu {
 
 
     for(int i=0;i<c.length;i++){
-      shapes.sptoggle(i,a,c[i],c);
+      BMS.shapes.sptoggle(i,a,c[i],c);
       if(mousePressed)
       if(!items.get(i).pos()){
         items.get(i).toggle=0;
@@ -1370,7 +1513,7 @@ class Menu {
 
 
     for(int i=0;i<c.length;i++){
-      shapes.sptoggle(i,a,c[i],c,m);
+      Bms.shapes.sptoggle(i,a,c[i],c,m);
     }
   };
 

@@ -1,5 +1,6 @@
 class Window extends Scene{
-  
+  BMScontrols Bms;
+  PApplet applet;
   //float x,y,w,h;
   float bw,bh, navheight = 50,deltay,transparency = 200,transparency1 = 50,transparency2 = 80,transparency3 = 100,transparency4 = 150,
         r1,r2,r3,r4;
@@ -45,6 +46,26 @@ class Window extends Scene{
     y2 = y + h;
     fill = true;
     //scene = new Sc
+    
+    
+  };
+  
+  Window(float X,float Y,float WW,float HH,BMScontrols bms){
+    
+    x = X;
+    y = Y;
+    w = WW;
+    h = HH;
+    
+    x1 = x;
+    y1 = y;
+    x2 = x + w;
+    y2 = y + h;
+    Bms = bms;
+    applet = bms.applet;
+    fill = true;
+    //scene = new Sc
+    
     
   };
   
@@ -560,7 +581,7 @@ class Window extends Scene{
     }
     //if(pos()&&mousePressed&&!dposg()&&!ddown)smdown = true;
 
-    //if(dposg()&&mousePressed&&!nav.get(0).pos()&&!nav.get(1).pos()&&!sliders.get(1).mdown&&!smdown&&!globaldown&&!X.pos())ddown = true;
+    //if(dposg()&&mousePressed&&!nav.get(0).pos()&&!nav.get(1).pos()&&!sliders.get(1).mdown&&!smdown&&!globalDown&&!X.pos())ddown = true;
     
     if(sliders.size()>0&&sliders.get(1)!=null){
     if(!ddown&&pos()&&mousePressed&&!dposg()&&!sliders.get(1).pos()&&!mdown&&!ddown&&!sliders.get(1).mdown){

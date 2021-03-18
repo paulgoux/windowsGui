@@ -1,7 +1,8 @@
 class Table_ {
-
+  BMScontrols Bms;
+  PApplet applet;
   int rows, cols, bcols, brows;
-  float x, y, w, h, bw, bh, xpadding, ypadding;
+  float x, y, w, h, bx, by, bw, bh, xpadding, ypadding;
 
   ArrayList<TextBox> grid = new ArrayList<TextBox>();
   ArrayList<Button> Buttons = new ArrayList<Button>();
@@ -14,6 +15,8 @@ class Table_ {
     this.y = y;
     this.w = w;
     this.h = h;
+    bx = x;
+    by = y;
     this.cols = cols;
     this.rows = rows;
     bcols = cols;
@@ -40,6 +43,8 @@ class Table_ {
     this.y = y;
     this.w = w;
     this.h = h;
+    bx = x;
+    by = y;
     this.cols = cols;
     this.rows = rows;
 
@@ -120,10 +125,10 @@ class Table_ {
       b.self_click3();
     }
     Button b = null;
-    if(buttons.size()>0){b = Buttons.get(0);
+    if(Buttons.size()>0){b = Buttons.get(0);
     b.self_click3();
       
-    if(b.toggle==1){
+    if(b!=null&&b.toggle==1){
       for (int i=0; i<rows; i++) {
       ArrayList<TextBox> a = gridarray.get(i);
       

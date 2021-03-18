@@ -1,4 +1,6 @@
 class fileOutput {
+  PApplet applet;
+  BMScontrols Bms;
   PrintWriter output;
   boolean save, onMouseUp, mdown, debug, append, appendFile, match,append2,overWrite;
   int counter, counter2;
@@ -158,7 +160,7 @@ class fileOutput {
         
         list = listNames(filePath);
         boolean b = false;
-        for(int j=maxFolderSize;j>-1;j--){
+        for(int j=Bms.maxFolderSize;j>-1;j--){
           //println(j);
           if(b)break;
           counter = j;

@@ -1,11 +1,13 @@
 class TextArea{
-  
+  BMScontrols Bms;
+  PApplet applet;
   int id,toggle,cols,rows,size,t,timer = 101,blkrate = 30,t1 = blkrate,t2 = blkrate,start,end,hcount,index,lindex,vindex = -1,hindex = -1,windex,vpos = 0,hpos,sltcounter,vcount = 0
       ,delay=10, maxCount = 51;
-  float x,y,w,h,textsize = 12,twidth = 0,posx,posy,tposx,tposy,strposx,strposy,tbwidth,strwidth,strheight,cursorx, cursory,crwidth,totalwidth;
+  float x,y,w,h,bx,by,bh,bw,textsize = 12,twidth = 0,posx,posy,tposx,tposy,strposx,strposy,tbwidth,strwidth,strheight,cursorx, cursory,crwidth,totalwidth;
   public float inputDelay = 9,delay2 = 5;
   String label,text,label_backup,cboard = "",value;
-  boolean drag,resize,hover,border,background,hidden,fill = true,init,ready,label_bool,clear,copied,tbox = true,tsize = false,parentCanvas,setDelay,firstPress,getChar;
+  boolean drag,resize,hover,border,background,hidden,fill = true,init,ready,label_bool,clear,copied,tbox = true,tsize = false,parentCanvas,setDelay,firstPress,getChar,selectAll,ctrl,
+          clipboardToggle,copyClipboard;
   //Menu toolBox;
   //Button child;
   //Slider
@@ -21,7 +23,7 @@ class TextArea{
   ArrayList<Integer> dragh = new ArrayList<Integer>();
   //ArrayList<Float> tsize = new ArrayList<Float>();
   Letter b = null;
-  color col = color(255),col2 = color(0);
+  int col = color(255),col2 = color(0);
   PVector mouse;
   //Window parent;
   
@@ -31,6 +33,10 @@ class TextArea{
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     rows = Rows;
     totalwidth = w * rows;
@@ -47,6 +53,10 @@ class TextArea{
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     rows = Rows;
     totalwidth = w * rows;
@@ -65,6 +75,10 @@ class TextArea{
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     rows = Rows;
     
@@ -291,7 +305,7 @@ class TextArea{
   
   void selectall(){
     
-    if(toggle==1&&ctrl==1&&selectAll){
+    if(toggle==1&&ctrl&&selectAll){
       fill(0);
       text("Select all", 100,200);
     }
@@ -417,12 +431,15 @@ class TextArea{
     if(textbox.size()>0&&hindex!=-1)current = textbox.get(hindex);
     if(textbox.size()>0&&hindex==-1)current = textbox.get(textbox.size()-1);
     
-    if(clipboard_toggle==0)cboard = "";
+    if(!clipboardToggle)cboard = "";
     
-    if(cboard != clipBoard&&copy_clipboard){ clipboard = clipBoard;cboard = clipBoard;}
-    else{ clipboard = null;}
+    if(cboard != BMS.clipBoard&&copyClipboard){ 
+      clipboard = BMS.clipBoard;
+      cboard = BMS.clipBoard;
+    }
+    else clipboard = null;
     float delay = delay2;
-    if(!copy_clipboard&&clipboard_toggle==0){
+    if(!copyClipboard&&!clipboardToggle){
       
         timer --;
         Letter l = null;
@@ -472,7 +489,7 @@ class TextArea{
         else if(keyPressed && key==BACKSPACE&&getChar){delete();}
         //setDelay = true;
     }
-    else if(copy_clipboard&&clipboard_toggle==1&&!tsize){
+    else if(copyClipboard&&clipboardToggle&&!tsize){
       
             if(hindex>-1){
             if(hindex<textBox.length())tm = textBox.substring ( 0, hindex + 1  );
@@ -488,8 +505,8 @@ class TextArea{
                 String b = str(cboard.charAt(i));
                 textBox += b;
               }}
-              clipboard_toggle = 0;
-              copy_clipboard = false;
+              clipboardToggle = false;
+              copyClipboard = false;
               }}
   };
   
@@ -498,7 +515,7 @@ class TextArea{
   
   void error(){
     
-    if(clipBoard.length()>0&&textWidth(clipBoard)+textWidth(textBox)*textsize/12>w*(rows-1)&&copy_clipboard&&clipboard_toggle==1){tsize = true;}
+    if(Bms.clipBoard.length()>0&&textWidth(Bms.clipBoard)+textWidth(textBox)*textsize/12>w*(rows-1)&&copyClipboard&&clipboardToggle){tsize = true;}
     
     if(toggle==1||pos()){
           if(tsize){
@@ -518,7 +535,7 @@ class TextArea{
 
 void error(PGraphics canvas){
 
-  if(clipBoard.length()>0&&textWidth(clipBoard)+textWidth(textBox)*textsize/12>w*(rows-1)&&copy_clipboard&&clipboard_toggle==1){tsize = true;}
+  if(Bms.clipBoard.length()>0&&textWidth(Bms.clipBoard)+textWidth(textBox)*textsize/12>w*(rows-1)&&copyClipboard&&clipboardToggle){tsize = true;}
     
   if(mouse!=null&&(toggle==1||pos(mouse))){
           if(tsize){

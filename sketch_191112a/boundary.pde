@@ -1,5 +1,6 @@
  class Boundary{
-  
+  PApplet applet;
+  BMScontrols Bms;
   float x1,x2,y1,y2,w,h,x3,y3,size = 1,x4,y4,D1,D2,T1,T2,collision_index,menux,menuy,deltamx,deltamy,tacx,tacy,dir;
   float x,y,bx = x,by = y;
   public float mass,vx,vy,ax,ay,density,friction_u,momentum,bax ,bay,pathWidth=20,gconst = 0.1,floor = 590,rtheta = 0,avoidance,cohesion,broom;
@@ -10,7 +11,7 @@
   public boolean toggle = false,mdown,mup = true,circle,square,bezier,tri,c_poligon,poligon,drag,none,spline,hover,hover2,point1,point2,point3,point4,gravity,hidemenu,clear,edit,complex,cstart,showgrid,cfinish = false,border,fill,hidden,connectedlines,path,avoidBoundary,cohesionBoundary,amendBoundary,amendInnerBoundary, amendCohesion,amendAvoidance,dashed;
   boolean linedown = false,sdown,rtoggle,click,open,dynamic = true,falling = true,rotating,update,lock,pdown,updatep,updateg,tdown,trow,menudown,pointadded,converted,rdown,phover,lhover,contextClick,visible = true;
   float dx,dy,Theta,Norm;
-  color col = color(255),bg = color(0,180);
+  int col = color(255),bg = color(0,180);
   ArrayList<Integer> indices = new ArrayList<Integer>();
   ArrayList<Button> Buttons = new ArrayList<Button>();
   ArrayList<Boundary> Boundaries = new ArrayList<Boundary>();
@@ -1438,10 +1439,9 @@
   
   void logic(){
     if((tri||toggle||circle||bezier||square||spline||poligon||c_poligon||connectedlines||path)){ open = true;}
-    if(mousePressed&&open_menus)menudown = true;
-    else menudown = false;
+    
     if(none)open = false;
-    if(pallete!=null)pallete.click(12,main,"clear");
+    if(pallete!=null)pallete.click(12,Bms.main,"clear");
     if(hidemenu){
       
       if(pallete.x+pallete.w>=0){
@@ -1460,7 +1460,7 @@
         pallete.items.get(10).toggle=0;
       }
     }}else if(pallete!=null&&pallete.x<0){
-      main.pallete.items.get(15).toggle=0;
+      pallete.items.get(15).toggle=0;
       pallete.x += 6;
       for(int i=0;i<pallete.items.size();i++){
         Button a = pallete.items.get(i);
@@ -1546,7 +1546,7 @@
   
   void functions(){
       debug();
-      if(!edit&&!open_menus&&!pallete.pos()&&open&&!palletehide.pos()){
+      if(!edit&&!pallete.pos()&&open&&!palletehide.pos()){
     if (toggle)create();
     else if (square)create_rect();
     else if(circle)create_circle();
@@ -1856,7 +1856,7 @@
     float ay = mouseY;
     
     Boundary n;
-    if (circle&&!menudown&&mousePressed&&mouseButton == LEFT&&shapes.toggle==0&&mouseX>main.x&&mouseY>main.y){
+    if (circle&&!menudown&&mousePressed&&mouseButton == LEFT&&Bms.shapes.toggle==0&&mouseX>Bms.main.x&&mouseY>Bms.main.y){
        
       mdown = true;
       ax = mouseX;
@@ -1908,7 +1908,7 @@
     Boundary n;
     //temp = new ArrayList<
     
-      if (toggle&&!menudown&&mousePressed&&!open_menus&&mouseButton == LEFT&&mouseX>BMS.main.x&&mouseY>BMS.main.y){
+      if (toggle&&!menudown&&mousePressed&&mouseButton == LEFT&&mouseX>BMS.main.x&&mouseY>BMS.main.y){
        
       mdown = true;
       ax = mouseX;
@@ -1942,7 +1942,7 @@
     Boundary n;
     float d;
     
-    if (tri&&mousePressed&&!open_menus&&shapes.toggle==0&&mouseButton == LEFT&&mouseX>main.x&&mouseY>main.y){
+    if (tri&&mousePressed&&Bms.shapes.toggle==0&&mouseButton == LEFT&&mouseX>Bms.main.x&&mouseY>Bms.main.y){
        
       mdown = true;
       ax = mouseX;
@@ -1988,7 +1988,7 @@
     float ax = mouseX;
     float ay = mouseY;
     //if(mousePressed)println(shapes.toggle);
-    if (square&&!menudown&&mousePressed&&!open_menus&&shapes.toggle==0&&mouseButton == LEFT&&mouseX>main.x&&mouseY>main.y){
+    if (square&&!menudown&&mousePressed&&Bms.shapes.toggle==0&&mouseButton == LEFT&&mouseX>Bms.main.x&&mouseY>Bms.main.y){
       
       mdown = true;
       ax = mouseX;
@@ -2033,7 +2033,7 @@
     sides = int(Sides.value);
     if(sides>0){
       
-    if (mousePressed&&mcount==0&&!complexsub.pos()&&shapes.toggle==0&&mouseX>main.x&&mouseY>main.y){
+    if (mousePressed&&mcount==0&&!complexsub.pos()&&Bms.shapes.toggle==0&&mouseX>Bms.main.x&&mouseY>Bms.main.y){
       
       mdown = true;
       ax = mouseX;
@@ -2132,7 +2132,7 @@
           a.draw();
         }
       
-      if(mousePressed&&mcount==0&&!complexsub.pos()&&shapes.toggle==0&&mouseX>main.x&&mouseY>main.y)mdown = true;
+      if(mousePressed&&mcount==0&&!complexsub.pos()&&Bms.shapes.toggle==0&&mouseX>Bms.main.x&&mouseY>Bms.main.y)mdown = true;
       else mdown = false;
       if(mdown) mcount++;
       if(mousePressed&&complexsub.pos()){
@@ -2210,7 +2210,7 @@
     if(connectedlines){
       complexsub.draw();
       
-      if(mousePressed&&mcount==0&&!complexsub.pos()&&shapes.toggle==0)mdown = true;
+      if(mousePressed&&mcount==0&&!complexsub.pos()&&Bms.shapes.toggle==0)mdown = true;
       else mdown = false;
       if(mousePressed&&complexsub.pos())cfinish = true;
       else if(!mousePressed)cfinish = false;
@@ -2272,7 +2272,7 @@
     if(path){
       complexsub.draw();
       
-      if(mousePressed&&mcount==0&&!complexsub.pos()&&shapes.toggle==0)mdown = true;
+      if(mousePressed&&mcount==0&&!complexsub.pos()&&Bms.shapes.toggle==0)mdown = true;
       else mdown = false;
       if(mousePressed&&complexsub.pos())cfinish = true;
       else if(!mousePressed)cfinish = false;

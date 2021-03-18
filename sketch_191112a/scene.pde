@@ -1,6 +1,7 @@
 class Scene extends Boundary{
-  
-  int id;
+  PApplet applet;
+  BMScontrols Bms;
+  int id,gw = 25,gh = 20;
   //public float x,y,w,h,
   public float bordersize = 1,limit;
   public int cols = 40, rows = 30;
@@ -8,7 +9,7 @@ class Scene extends Boundary{
   public boolean showq,showf;
   //public boolean drag,resize,border = true,fill = true ,toggle,visible,clear;
   //public color col = color(0);
-  public color scol = color(0,150);
+  public int scol = color(0,150);
   HashMap<String,Boolean> values = new HashMap<String,Boolean>();
   ArrayList<Menu> menus = new ArrayList<Menu>();
   ArrayList<Slider> sliders = new ArrayList<Slider>();
@@ -26,6 +27,34 @@ class Scene extends Boundary{
     y = yy;
     w = ww;
     h = hh;
+    //main.Boundaries.add(new Boundary(x,y,w,h,4));
+    float gW = (w)/cols, gH = h/rows;
+    int k = gw;
+    
+    float sw = w /cols;
+    float sh = h / rows;
+    
+    for(int i=0;i<rows;i++){
+      for(int j=0;j<cols;j++){
+        
+        float X = x + (gW * j);  
+        float Y = y + (gH * i);
+        int ID = int(j + i * cols);
+        
+        fields.add(new Quad(new PVector(X,Y),ID,gW,gH,this));
+        
+      }}
+    scenes.add(this);
+  };
+  
+  Scene(float xx,float yy, float ww, float hh,BMScontrols bms){
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = hh;
+    Bms = bms;
+    applet = bms.applet;
     //main.Boundaries.add(new Boundary(x,y,w,h,4));
     float gW = (w)/cols, gH = h/rows;
     int k = gw;

@@ -1,9 +1,10 @@
 class Quad{
+  PApplet applet;
   int id,iid,counter,xpos,ypos;
   float x,y,w,h,dens,dens2,dens3,dens4,v,v2,v3,v4,kv,kv2,kv3,kv4;
   float dir,dir2,dir3,dir4;
   PVector p, kp = new PVector(0,0),kp2 = new PVector(0,0),kp3 = new PVector(0,0);
-  color col = 0,col2 = 0,col3 = 0,col4 = 0;
+  int col = 0,col2 = 0,col3 = 0,col4 = 0;
   //ArrayList<Entity> children  = new ArrayList<Entity>();
   ArrayList<Quad> affectees  = new ArrayList<Quad>();
   ArrayList<Quad> affectors  = new ArrayList<Quad>();

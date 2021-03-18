@@ -1,15 +1,14 @@
 class Slider{
-  
+  BMScontrols Bms;
+  PApplet applet;
   int id = -1,type,functionId;
-  float x,y,w,h,valuex,valuey,btnw,btnh, value = 0,toffx,toffy,spacing = 20,tsize = 12,ssize,temp,startvalue,endvalue,start,end,r1,r2,r3,r4,radius,pieVal;
+  float x,y,w,h,bx,by,bw,bh,valuex,valuey,btnw,btnh, value = 0,toffx,toffy,spacing = 20,tsize = 12,ssize,temp,startvalue,endvalue,start,end,r1,r2,r3,r4,radius,pieVal;
   String label,parentVar,parentBool,itemLabel;
   boolean drag,resize,border,fill = true ,toggle,visible = true,horizontal = true,vertical,matrix,classic,pie,radio,square,bar,mdown,mup,Label,right,up,down,left,tvisible = true,update = true,
           tdown,parentCanvas,mdown1;
   public boolean localTheme;
-  color col = color(0);
-  color col2 = color(255);
-  color col3 = color(255,100);
-  color barcol = color(0, 255, 73),col4 = color(0,50),tcol = color(255),slidercol = color(255),hovercol = BMS.hcol,toggleCol = color(50,0),sliderbgcol = color(255);
+  int col = color(0), col2 = color(255), col3 = color(255,100);
+  int barcol = color(0, 255, 73),col4 = color(0,50),tcol = color(255),slidercol = color(255),hovercol = BMS.hcol,toggleCol = color(50,0),sliderbgcol = color(255);
   String control = "";
   Object Link,parentObject;
   Menu parent;
@@ -24,6 +23,10 @@ class Slider{
     y = yy;
     w = ww;
     h = hh;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     btnh = h+2;
     btnw = h;
     valuex = w/2;
@@ -42,6 +45,10 @@ class Slider{
     y = yy;
     w = ww;
     h = hh;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     btnh = h+2;
     btnw = h;
     label = Label;
@@ -136,12 +143,10 @@ class Slider{
     
   };
   
-  
-  
   void draw(){
     functions();
-    // fill(0);
-    // text(valuex,x,y);
+     fill(255);
+     
     if(tooltip!=null){
       if(tooltipPos()){
         noStroke();
@@ -243,7 +248,7 @@ class Slider{
         PVector m = tooltip.getMouse(mouse);
         //canvas.rect(x+w+textWidth(k),y,20,h);
       }
-      if(tooltipPos(mouse)&&!mdown&&!tdown&&mousePressed){
+      if(tooltip!=null&&tooltipPos(mouse)&&!mdown&&!tdown&&mousePressed){
         
         tooltip.x = x+w+textWidth("0.000")+20;
         tooltip.y = y;
@@ -253,7 +258,7 @@ class Slider{
         mdown = true;
         tdown = true;
       }
-      if(!tooltip.draggable){
+      if(tooltip!=null&&!tooltip.draggable){
 
       if((!tooltip.posTab(mouse)&&!mdown&&tdown&&mousePressed)||pos(mouse)&&mousePressed){
         
@@ -262,7 +267,7 @@ class Slider{
         mdown = true;
         tdown = false;
         //cursor(ARROW);
-      }}else if((!tooltip.posTabd(mouse)&&!mdown&&tdown&&mousePressed)||pos(mouse)&&mousePressed){
+      }}else if((tooltip!=null&&!tooltip.posTabd(mouse)&&!mdown&&tdown&&mousePressed)||pos(mouse)&&mousePressed){
         
         tooltip.toggle=false;
         tooltip.visible = false;
@@ -319,7 +324,7 @@ class Slider{
       }
       if(!mousePressed){
         mdown = false;
-        
+        if(tooltip!=null)
         for(int i=0;i<tooltip.menus.get(0).items.size();i++){
           Button b = tooltip.menus.get(0).items.get(i);
           
@@ -444,7 +449,7 @@ class Slider{
       else if(radio){}
       else if(bar){}
     }else if(pie){
-      if(square)pieSquare();
+      if(square)pieSquare(canvas);
       else if(radio)pieRadio();
       else if(bar)pieBar();
     }}
@@ -771,11 +776,14 @@ class Slider{
   void pieSquare(){
     float val = 0;
     float v1 = 5;
-    if(dist(mouseX,mouseY,x,y)<radius&&mousePressed&&!mdown1)mdown1 = true;
+    if(dist(mouseX,mouseY,x,y)<radius&&mousePressed&&!mdown1&&BMS.sliderObject ==null){
+      mdown1 = true;
+      BMS.sliderObject = this;
+    }
     //if(mdown)val = map(mouseX,0,width,0,2*PI);
     if(mdown1)pieVal = abs(2*PI-(atan2(x-mouseX,y-mouseY)+PI/2));
     if(pieVal>2*PI)pieVal -=PI*2;
-    value = pieVal;
+    
     fill(255);
     if(dist(mouseX,mouseY,x,y)<radius)
     fill(BMS.fcol);
@@ -795,10 +803,64 @@ class Slider{
     stroke(255);
     strokeWeight(5);
     fill(BMS.tcol);
-    float val1 = map(pieVal,0,2*PI,0,100);
+    float val1 = map(pieVal,0,2*PI,startvalue,endvalue);
+    if(mdown1)value = val1;
     fill(0);
-    text(pieVal,x-40,y+h-40);
-    if(!mousePressed)mdown1 = false;
+    text(val1,x-40,y+h-40);
+    if(!mousePressed){
+      mdown1 = false;
+      if(BMS.sliderObject == this)BMS.sliderObject = null;
+    }
+  };
+  
+  void pieSquare(PGraphics canvas){
+    float v1 = 10;
+    pieLogic(mouse);
+    
+    canvas.fill(255);
+    if(dist(mouse.x,mouse.y,x,y)<radius||mdown1)
+    canvas.fill(BMS.fcol);
+    canvas.ellipse( x,y,radius*2-v1,radius*2-v1);
+    canvas.fill(255);
+    canvas.ellipse( x,y,radius*2-v1,radius*2-v1);
+    canvas.fill(BMS.fcol);
+    if(dist(mouse.x,mouse.y,x,y)<radius||mdown1)
+    canvas.fill(BMS.hcol);
+    canvas.arc(x,y, radius*2, radius*2, 0, pieVal, PIE);
+    canvas.fill(255);
+    canvas.ellipse( x,y,radius*2-25,radius*2-25);
+    canvas.fill(BMS.hcol);
+    if(dist(mouse.x,mouse.y,x,y)<radius||mdown1)
+    canvas.fill(BMS.fcol);
+    canvas.ellipse( x,y,radius*2-25,radius*2-25);
+    canvas.stroke(255);
+    fill(BMS.tcol);
+    fill(0);
+    canvas.text(value,x-20,y+h-h/2+10);
+    if(mdown1&&!mousePressed){
+      mdown1 = false;
+      if(BMS.sliderObject == this)BMS.sliderObject = null;
+    }
+  };
+  void pieLogic(){
+    
+  };
+  
+  void pieLogic(PVector mouse){
+    if(dist(mouse.x,mouse.y,x,y)<radius&&mousePressed&&!mdown1&&BMS.sliderObject ==null){
+      mdown1 = true;
+      BMS.sliderObject = this;
+      
+    }
+    if(dist(mouse.x,mouse.y,x,y)>radius&&mousePressed&&!mdown1&&BMS.sliderObject ==this){
+      BMS.sliderObject = null;
+      
+    }
+    if(mdown1&&BMS.sliderObject==this){
+      pieVal = abs(2*PI-(atan2(x-mouse.x,y-mouse.y)+PI/2));
+      if(pieVal>2*PI)pieVal -=PI*2;
+      value = map(pieVal,0,2*PI,startvalue,endvalue);
+    }
   };
   
   void pieRadio(){
@@ -856,13 +918,14 @@ class Slider{
           if(mouseX>x+w-btnw)valuex = w-btnw;
         }}
       }
-    if(mdown&&!mousePressed&&!tdown){
-      
+    if(mdown&&!mousePressed&&!tdown&&BMS.sliderObject==null){
+      BMS.sliderObject = this;
       mdown = false;
       toggle = false;
     }
-    if(!mousePressed&&BMS.sliderObject==this){
+    if(mdown&&!mousePressed&&BMS.sliderObject==this){
       BMS.sliderObject = null;
+      mdown = false;
     }
   };
   
@@ -874,8 +937,13 @@ class Slider{
     // }
     // fill(255,0,0);
     // ellipse(m.x,m.y,20,20);
-    if(pos(mouse)&&mousePressed){
-      
+    if(!pos(mouse)&&mousePressed&&!mdown&&BMS.sliderObject==this){
+      BMS.sliderObject = null;
+      //mdown = true;
+      //println(parentTab.x,parentTab.y,mouseX,mouse.x,mouseY,mouse.y);
+    }
+    if(pos(mouse)&&mousePressed&&!tdown&&BMS.sliderObject==null){
+      BMS.sliderObject = this;
       mdown = true;
       //println(parentTab.x,parentTab.y,mouseX,mouse.x,mouseY,mouse.y);
     }
@@ -898,7 +966,10 @@ class Slider{
           if(m.x>x-1&&m.x<x + w-btnw && m.y>y && m.y < y + h)valuex = m.x-x;
           if(m.x>x+w-btnw)valuex = w-btnw;
         }}}
-    if(!mousePressed)mdown = false;
+    if(mdown&&!mousePressed){
+      if(BMS.sliderObject==this)BMS.sliderObject = null;
+      mdown = false;
+    }
   };
   
   boolean pos(){
@@ -1014,7 +1085,7 @@ class Slider{
     
     float v = 0;
     if(!vertical){
-    if(mdown||update){
+    if((mdown||update)){
       v = map( valuex, 1, w-1,start,end);
       value = v;
       update = false;
@@ -1024,6 +1095,10 @@ class Slider{
       value = v;
       update = false;
     }}
+    //if(mdown&&!mousePressed){
+    //  if(BMS.sliderObject==this)BMS.sliderObject = null;
+    //  mdown = false;
+    //}
   };
   
   void setint(int start, int end,Object a,String b) {
